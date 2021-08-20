@@ -18,7 +18,7 @@ admins = []
 
 ip = {
     'db':    '',
-    'redis': '',
+    'redis': '127.0.0.1.',
 }
 
 mysql_info = {
@@ -32,7 +32,9 @@ mysql_info = {
 
 aiogram_redis = {
     'host':     ip['redis'],
-    'password': ''
+    'port':     6379,
+    'password': '',
+    'db':       0
 }
 
 redis = {

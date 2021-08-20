@@ -39,15 +39,6 @@ class User:
         pass
 
     @contract
-    async def register_user(self, tel: str):
-        """Registers users telephone in db
-
-        :param tel: telephone number
-        :type tel: str
-        """
-        pass
-
-    @contract
     async def _set_user_info_db(self, user_id):
         """Gets info about user from mysql
 

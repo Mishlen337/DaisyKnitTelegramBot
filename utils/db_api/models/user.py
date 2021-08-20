@@ -1,10 +1,10 @@
 """Model to declare classes related with user."""
 
-from asyncio import new_event_loop
 from contracts import contract
 from datetime import datetime
+from numpy import uint32
 # from utils.db_api.consts import RawConnection as cn
-from numpy import uint32, uint64
+from utils.db_api.models.abstract_saver import AbstractSaver
 
 
 class User:
@@ -14,7 +14,7 @@ class User:
         self.first_name: str = None
         self.last_name: str = None
         self.middle_name: str = None
-        self.telephone: uint64 = None
+        self.telephone: int = None
         # time when user joined in telegram bot
         self.created_at: datetime = None
 
@@ -45,7 +45,7 @@ class User:
 
     @staticmethod
     @contract
-    def get_user_by_telephone(tel: uint64):
+    def get_user_by_telephone(tel: str):
         """Returns user by his telephone in db
 
         :param tel: telephone number
@@ -55,4 +55,20 @@ class User:
         """
         # TODO Determine user_id in telegram bot by telephone
         # Make user instance
+        pass
+
+
+class SurveyResponseSaver(AbstractSaver):
+    """Class to declare saver to put user model in mysql db."""
+
+    @contract
+    @staticmethod
+    async def save(model: User):
+        """Saves survey response in mysql db
+
+        :param model: User instance
+        :type model: User
+        """
+        # TODO put info in user table
+        # info: users info
         pass

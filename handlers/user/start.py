@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from contracts import contract
+from utils.db_api.models.user import User
 
 
 @contract
@@ -33,10 +34,10 @@ async def get_contact(msg: types.Message, state: FSMContext):
     :param state: FSMContext instance
     :type state: FSMContext
     """
-    if msg.contact.phone_number is not None:
-        print(msg.contact.phone_number)
-        keyboard = types.ReplyKeyboardRemove()
-        await msg.bot.send_message(msg.from_user.id,
-                                   "Вы успешно отправили свой номер",
-                                   reply_markup=keyboard)
-        await state.set_state("initial_state")
+    user = User(msg.from_user.id)
+    
+    keyboard = types.ReplyKeyboardRemove()
+    await msg.bot.send_message(msg.from_user.id,
+                                "Вы успешно отправили свой номер",
+                                reply_markup=keyboard)
+    await state.set_state("initial_state")

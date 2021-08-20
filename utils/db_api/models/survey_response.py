@@ -1,9 +1,10 @@
 """Module to declare users responses to a survey."""
 
 from contracts import contract
+from typing import Dict
 from utils.db_api.models.user import User
 from utils.db_api.models.survey import Survey
-from typing import Dict
+from utils.db_api.models.abstract_saver import AbstractSaver
 
 
 class SurveyResponse:
@@ -35,3 +36,19 @@ class SurveyResponse:
         :rtype: Dict[str, str]
         """
         # TODO get responses from db
+
+
+class SurveyResponseSaver(AbstractSaver):
+    """Class to declare saver to put survey response model in mysql db."""
+
+    @contract
+    @staticmethod
+    async def save(model: SurveyResponse):
+        """Saves survey response in mysql db
+
+        :param model: response to a survey
+        :type model: SurveyResponse
+        """
+        # TODO put info in survey response table
+        # info: survey_id, user_id
+        pass

@@ -13,3 +13,4 @@ class AbstractSaver(ABC):
 
         :param model: mysql db model
         """
+        pass

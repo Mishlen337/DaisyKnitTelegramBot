@@ -61,8 +61,8 @@ class User:
 class UserSaver(AbstractSaver):
     """Class to declare saver to put user model in mysql db."""
 
-    @contract
     @staticmethod
+    @contract
     async def save(model: User):
         """Saves user in mysql db
 

@@ -1,6 +1,7 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher
 from .help import bot_help
-from .start import bot_start, get_contact
+from .start import bot_start
+from .get_contact import get_contact
 # from poll import poll_handler
 
 

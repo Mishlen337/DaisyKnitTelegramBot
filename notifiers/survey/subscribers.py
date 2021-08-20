@@ -1,7 +1,8 @@
 """Module to declare managers subscribers."""
 
-from contracts import contract
+import asyncio
 from notifiers.abstracts import AbstractSurveyObserver
+from .event_args import SurveyEventArgs
 
 
 class TelegramBotSurveyNotifier(AbstractSurveyObserver):
@@ -14,12 +15,11 @@ class TelegramBotSurveyNotifier(AbstractSurveyObserver):
         # template message of keyboard
         pass
 
-    @contract
-    async def update(self, event_args):
+    async def update(self, event_args: SurveyEventArgs):
         """Sends invitation survey in Telegram bot to take a survey.
 
         :param event_args: data of a survey event
-        :type event_args: [type]
+        :type event_args: SurveyEventArgs
         """
         # TODO Send invitation in Telegram bot
         pass
@@ -34,12 +34,13 @@ class LoggerSurveyNotifier(AbstractSurveyObserver):
         # template string of invitation
         pass
 
-    @contract
-    async def update(self, event_args):
+    async def update(self, event_args: SurveyEventArgs):
         """Logs info about invitation survey in file.
 
         :param event_args: data of a survey event
-        :type event_args: [type]
+        :type event_args: SurveyEventArgs
         """
+        print(event_args.user.user_id_tel)
+        print(event_args.survey.name)
+        await asyncio.sleep(1.0)
         # TODO Log info in file
-        pass

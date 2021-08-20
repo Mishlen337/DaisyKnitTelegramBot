@@ -1,7 +1,8 @@
 """Module to declare users responses to a survey."""
 
+from utils.db_api.models.response import Response
 from contracts import contract
-from typing import Dict
+from typing import Dict, List
 from utils.db_api.models.user import User
 from utils.db_api.models.survey import Survey
 from utils.db_api.models.abstract_saver import AbstractSaver
@@ -10,28 +11,22 @@ from utils.db_api.models.abstract_saver import AbstractSaver
 class SurveyResponse:
     """Class to declare users responses to a survey."""
 
-    async def __init__(self, id: str):
+    def __init__(self, id: str):
         self.id = id
         self.survey: Survey = None
         self.user: User = None
-        await self._set_survey_response_info_db(id)
 
     @contract
-    async def _set_survey_response_info_db(self, id: str):
+    async def set_info_db(self):
         """Gets info about question from mysql db
 
-        :param id: survey_response in mysql db
-        :type id: str
         """
         # TODO fil fields from db
         pass
 
-    @contract
-    async def get_responses_db(self, user: User) -> Dict[str, str]:
+    async def get_responses_db(self) -> Dict[str, str]:
         """Gets respones to this survey from mysql db
 
-        :param user: user instance
-        :type user: User
         :return: responses to this survey
         :rtype: Dict[str, str]
         """
@@ -41,13 +36,15 @@ class SurveyResponse:
 class SurveyResponseSaver(AbstractSaver):
     """Class to declare saver to put survey response model in mysql db."""
 
-    @contract
     @staticmethod
-    async def save(model: SurveyResponse):
-        """Saves survey response in mysql db
+    @contract
+    async def save(model: List[Survey, Response]) -> SurveyResponse:
+        """Saves new survey response in mysql db and returns id
 
-        :param model: response to a survey
-        :type model: SurveyResponse
+        :param model: List of sur
+        :type model: List[Survey, Response]
+        :return: SurveyResponse instance
+        :rtype: SurveyResponse
         """
         # TODO put info in survey response table
         # info: survey_id, user_id

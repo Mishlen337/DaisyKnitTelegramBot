@@ -21,11 +21,9 @@ class Response:
         self.answer = answer
 
     @contract
-    async def get_response_db() -> str:
-        """Gets string response from mysql db and set value to answer
+    async def set_info_db():
+        """Sets string response from mysql db
 
-        :return: string response
-        :rtype: str
         """
         # TODO Save response to self.answer
         # Return self.answer

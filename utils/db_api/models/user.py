@@ -58,13 +58,13 @@ class User:
         pass
 
 
-class SurveyResponseSaver(AbstractSaver):
+class UserSaver(AbstractSaver):
     """Class to declare saver to put user model in mysql db."""
 
     @contract
     @staticmethod
     async def save(model: User):
-        """Saves survey response in mysql db
+        """Saves user in mysql db
 
         :param model: User instance
         :type model: User

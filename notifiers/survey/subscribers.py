@@ -1,8 +1,10 @@
 """Module to declare managers subscribers."""
 
 import asyncio
+import aiohttp
 from notifiers.abstracts import AbstractSurveyObserver
 from .event_args import SurveyEventArgs
+from data import config
 
 
 class TelegramBotSurveyNotifier(AbstractSurveyObserver):
@@ -21,8 +23,16 @@ class TelegramBotSurveyNotifier(AbstractSurveyObserver):
         :param event_args: data of a survey event
         :type event_args: SurveyEventArgs
         """
-        # TODO Send invitation in Telegram bot
-        pass
+        user_id = event_args.user.user_id_tel
+        text = event_args.survey.name
+        
+        async with aiohttp.ClientSession() as session:
+            send_invitation_url = f"https://api.telegram.org/bot{config.BOT_TOKEN}/SendMessage"
+            async with session.post(send_invitation_url,
+                                    data={'chat_id': user_id,
+                                          'text': text}) as resp:
+                response = await resp.json()
+                print(response)
 
 
 class LoggerSurveyNotifier(AbstractSurveyObserver):

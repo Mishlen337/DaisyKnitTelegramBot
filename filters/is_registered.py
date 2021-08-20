@@ -3,6 +3,7 @@
 from aiogram import types
 from aiogram.dispatcher.filters import BoundFilter
 from contracts import contract
+from utils.db_api.models.user import User
 
 
 class RegistrationFilter(BoundFilter):
@@ -19,4 +20,5 @@ class RegistrationFilter(BoundFilter):
         :return: whether user have registered in telegram or no
         :rtype: bool
         """
-        pass
+        user = User(message.from_user.id)
+        return user.is_registered()

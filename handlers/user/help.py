@@ -12,6 +12,3 @@ async def bot_help(msg: types.Message, state: FSMContext):
         '/help - Получить справку'
     ]
     await msg.answer('\n'.join(text))
-    await msg.answer_poll(question="smth",
-                          options=[str(i+1) for i in range(10)],
-                          is_anonymous=False)

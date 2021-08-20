@@ -7,7 +7,8 @@ from . import utils
 
 class DefaultConstructor:
     @staticmethod
-    def _create_kb(actions: List[str], schema: List[int]) -> ReplyKeyboardMarkup:
+    def _create_kb(actions: List[str],
+                   schema: List[int]) -> ReplyKeyboardMarkup:
         btns = []
         for a in actions:
             btns.append(KeyboardButton(a))

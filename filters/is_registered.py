@@ -12,7 +12,7 @@ class RegistrationFilter(BoundFilter):
     key = "is_registered"
 
     @contract
-    def check(self, message: types.Message) -> bool:
+    async def check(self, message: types.Message) -> bool:
         """Checks whether user have registered in telegram or not
 
         :param message: Message to register user
@@ -21,4 +21,6 @@ class RegistrationFilter(BoundFilter):
         :rtype: bool
         """
         user = User(message.from_user.id)
-        return user.is_registered()
+        await user.set_info_db()
+        print(user.is_registered)
+        return user.is_registered

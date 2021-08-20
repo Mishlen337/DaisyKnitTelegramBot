@@ -3,7 +3,8 @@ from typing import List
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
-def arrange_default_schema(buttons: List[KeyboardButton], count: List[int]) -> ReplyKeyboardMarkup:
+def arrange_default_schema(buttons: List[KeyboardButton],
+                           count: List[int]) -> ReplyKeyboardMarkup:
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
     kb.row_width = max(count)
     if sum(count) != len(buttons):

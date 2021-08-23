@@ -37,7 +37,7 @@ class User:
         sql = """
         SELECT id, first_name, middle_name, last_name, email,
         telephone, authorized, created FROM daisyKnitSurvey.user
-        WHERE user_tel_id = (?,);
+        WHERE user_tel_id = %s;
         """
         params = (self.user_id_tel,)
         info = await cn._make_request(sql, params, True)
@@ -65,7 +65,7 @@ class User:
         # Make user instance
         sql = """
         SELECT user_id_tel FROM daisyKnitSurvey.user
-        WHERE telephone = (?,);
+        WHERE telephone = %s;
         """
         params = (tel,)
         user_id_tel = await cn._make_request(sql, params, True)
@@ -74,12 +74,12 @@ class User:
     async def save(self):
         """Saves user in mysql db."""
         sql = """
-        INSERT IGNORE INTO daisyKnitSurvey.user
-        (user_id_tel, first_name, middle_name, second_name,
+        INSERT INTO daisyKnitSurvey.user
+        (user_id_tel, first_name, middle_name, last_name,
         email, telephone, authorized, created)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         """
-        self.created_at = datetime.now()
+        # self.created_at = datetime.now()
         params = (self.user_id_tel, self.first_name, self.middle_name,
                   self.last_name, self.email, self.telephone,
                   self.is_authorized, self.created_at)

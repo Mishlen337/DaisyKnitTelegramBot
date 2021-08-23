@@ -13,7 +13,6 @@ class QuestionOrder:
         self.order: uint32 = None
         
     def save(self):
-        """Saves question in mysql db table:
-        """
+        """Saves question in mysql db table."""
         # TODO save question in mqsql db
         pass

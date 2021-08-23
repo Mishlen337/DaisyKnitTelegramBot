@@ -13,18 +13,22 @@ WEBHOOK_BOT_URL = f'{BASE_URL}{WEBHOOK_BOT_PATH}'
 
 CERT_PATH = env.str('WEBHOOK_SSL_CERT')
 
+# MySQL settings
+MYSQL_IP = env.str('MYSQL_IP')
+MYSQL_USER = env.str('MYSQL_USER')
+MYSQL_PASSWORD = env.str('MYSQL_PASSWORD')
 
 admins = []
 
 ip = {
-    'db':    '',
+    'db':    MYSQL_IP,
     'redis': '127.0.0.1.',
 }
 
 mysql_info = {
-    'host':     '',
-    'user':     '',
-    'password': '',
+    'host':     ip['db'],
+    'user':     MYSQL_USER,
+    'password': MYSQL_PASSWORD,
     'db':       '',
     'maxsize':  5,
     'port':     3306,
@@ -34,7 +38,7 @@ aiogram_redis = {
     'host':     ip['redis'],
     'port':     6379,
     'password': '',
-    'db':       0
+    'db':       ''
 }
 
 redis = {

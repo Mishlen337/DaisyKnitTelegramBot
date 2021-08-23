@@ -37,7 +37,7 @@ class User:
         sql = """
         SELECT id, first_name, middle_name, last_name, email,
         telephone, authorized, created FROM daisyKnitSurvey.user
-        WHERE user_tel_id = %s;
+        WHERE user_tel_id = (?,);
         """
         params = (self.user_id_tel,)
         info = await cn._make_request(sql, params, True)
@@ -65,7 +65,7 @@ class User:
         # Make user instance
         sql = """
         SELECT user_id_tel FROM daisyKnitSurvey.user
-        WHERE telephone = %s;
+        WHERE telephone = (?,);
         """
         params = (tel,)
         user_id_tel = await cn._make_request(sql, params, True)
@@ -77,7 +77,7 @@ class User:
         INSERT IGNORE INTO daisyKnitSurvey.user
         (user_id_tel, first_name, middle_name, second_name,
         email, telephone, authorized, created)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
         """
         self.created_at = datetime.now()
         params = (self.user_id_tel, self.first_name, self.middle_name,

@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`question_type` (
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`response_choice` (
-  `id` INT UNSIGNED NOT NULL,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)

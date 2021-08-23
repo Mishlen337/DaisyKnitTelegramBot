@@ -4,7 +4,7 @@ from contracts import contract
 from aiogram.dispatcher.storage import FSMContext
 from aiogram import types
 from data import events
-from utils.db_api.models.user import User, UserSaver
+from utils.db_api.models.user import User
 from utils.db_api.models.survey import Survey
 from notifiers.survey.event_args import SurveyEventArgs
 
@@ -21,7 +21,7 @@ async def get_contact(msg: types.Message, state: FSMContext):
     user = User(msg.from_user.id)
     user.telephone = msg.contact.phone_number
     # TODO get info from MindBox
-    await UserSaver.save(user)
+    await user.save()
     # Reply user that user is saved in db
     keyboard = types.ReplyKeyboardRemove()
     await msg.bot.send_message(msg.from_user.id,

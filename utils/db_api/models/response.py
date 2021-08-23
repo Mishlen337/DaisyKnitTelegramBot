@@ -1,8 +1,9 @@
 """Module to declare users response."""
 
-from utils.db_api.models.question import Question
-from utils.db_api.models.survey_response import SurveyResponse
-from utils.db_api.models.user import User
+from .question import Question
+from .survey_response import SurveyResponse
+from .user import User
+from utils.db_api.consts import RawConnection as cn
 
 
 class Response:
@@ -18,18 +19,21 @@ class Response:
         self.survey_response = survey_response
         self.answer = answer
 
-    async def set_info_db():
-        """Sets string response from mysql db
+    async def set_info_db(self):
+        """Sets string response from mysql db."""
 
-        """
-        # TODO Save response to self.answer
-        # Return self.answer
-        pass
+        sql = """SELECT answer FROM daisyKnitSurvey.response
+        WHERE user_id = %s AND question_id = %s
+        AND survey_response_id = %s;"""
+        params = (self.user.id, self.question, self.survey_response.id)
+        answer = await cn._make_request(sql, params, True)
+        self.answer = answer
 
     async def save(self):
-        """Saves response in mysql db
-
-        """
-        # TODO save response info in mysql db
-        # info user_id, question_id, survey_response
-        pass
+        """Saves response in mysql db."""
+        sql = """INSERT daisyKnitSurvey.response
+        (user_id, question_id, survey_response_id, answer)
+        VALUE (%s, %s, %s, %s);"""
+        params = (self.user.id, self.question.id, self.survey_response.id,
+                  self.answer)
+        await cn._make_request(sql, params)

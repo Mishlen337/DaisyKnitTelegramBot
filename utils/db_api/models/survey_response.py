@@ -2,25 +2,34 @@
 
 from typing import Dict
 from contracts import contract
-from utils.db_api.models.user import User
-from utils.db_api.models.survey import Survey
+from .user import User
+from .survey import Survey
+from utils.db_api.consts import RawConnection as cn
+from numpy import uint32
 
 
 class SurveyResponse:
     """Class to declare users responses to a survey."""
 
-    def __init__(self, id: str):
+    def __init__(self, id: uint32):
         self.id = id
         self.survey: Survey = None
         self.user: User = None
 
     async def set_info_db(self):
-        """Gets info about question from mysql db
+        """Gets info about question from mysql db."""
 
-        """
-        # TODO fil fields from db
-        pass
+        sql = """SELECT sr.survey_id, u.user_id_tel FROM daisyKnitSurvey.survey_response sr
+        JOIN daisyKnitSurvey.User u ON sr.user_id = u.id
+        WHERE sr.id = %s;"""
+        params = (self.id,)
+        info = await cn._make_request(sql, params)
+        survey_id = info[0]
+        self.survey = Survey(survey_id)
+        user_id_tel = info[1]
+        self.user = User(user_id_tel)
 
+    @contract
     async def get_responses_db(self) -> Dict[str, str]:
         """Gets respones to this survey from mysql db
 
@@ -28,6 +37,14 @@ class SurveyResponse:
         :rtype: Dict[str, str]
         """
         # TODO get responses from db
+        sql = """SELECT q.name, q.name_eng, r.answer FROM daisyKnitSurvey.response r
+        JOIN daisyKnitSurvey.question q ON r.question_id = q.id
+        WHERE r.user_id = %s AND r.survey_response_id = %s;
+        """
+        params = (self.user.id, self.id)
+        info = await cn._make_request(sql, params, True, True)
+        # TODO make Dict
+        return info
 
     @staticmethod
     @contract
@@ -41,8 +58,9 @@ class SurveyResponse:
         :return: SurveyResponse instance
         :rtype: SurveyResponse
         """
-        # TODO put info in survey response table
-        # info: survey_id, user_id
-        # get id of insertion
-        # get survey response instance
-        pass
+        sql = """INSERT daisyKnitSurvey.survey_response (survey_id, user_id)
+        VALUE (%s, %s)
+        OUTPUT id;"""
+        params = (survey.id, user.id)
+        id = await cn._make_request(sql, params, True)
+        return SurveyResponse(id)

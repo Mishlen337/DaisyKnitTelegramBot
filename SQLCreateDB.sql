@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`user` (
   `middle_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
   `email` VARCHAR(45) NULL,
-  `telephone` BIGINT UNSIGNED NULL,
+  `telephone` VARCHAR(16) NULL DEFAULT NULL,
   `authorized` BOOLEAN NULL,
   `created` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`user` (
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`survey` (
-  `id` INT UNSIGNED NOT NULL,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   `description` VARCHAR(255) NULL,
   `updated` DATETIME NULL,
@@ -24,14 +24,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`survey` (
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`question_type` (
-  `id` INT UNSIGNED NOT NULL,
-  `name` ENUM('callback', 'quiz', 'message') NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
-ENGINE = InnoDB;
-
-CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`question_type` (
-  `id` INT UNSIGNED NOT NULL,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` ENUM('callback', 'quiz', 'message') NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
@@ -45,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`response_choice` (
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`question` (
-  `id` INT UNSIGNED NOT NULL,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `name_eng` VARCHAR(255) NOT NULL,
   `question_type_id` INT UNSIGNED NOT NULL,
@@ -97,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`question_order` (
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`survey_response` (
-  `id` INT UNSIGNED NOT NULL,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `survey_id` INT UNSIGNED NOT NULL,
   `user_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),

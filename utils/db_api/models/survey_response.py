@@ -1,11 +1,9 @@
 """Module to declare users responses to a survey."""
 
-from utils.db_api.models.response import Response
+from typing import Dict
 from contracts import contract
-from typing import Dict, List
 from utils.db_api.models.user import User
 from utils.db_api.models.survey import Survey
-from utils.db_api.models.abstract_saver import AbstractSaver
 
 
 class SurveyResponse:
@@ -16,7 +14,6 @@ class SurveyResponse:
         self.survey: Survey = None
         self.user: User = None
 
-    @contract
     async def set_info_db(self):
         """Gets info about question from mysql db
 
@@ -32,20 +29,20 @@ class SurveyResponse:
         """
         # TODO get responses from db
 
-
-class SurveyResponseSaver(AbstractSaver):
-    """Class to declare saver to put survey response model in mysql db."""
-
     @staticmethod
     @contract
-    async def save(model: List[Survey, Response]) -> SurveyResponse:
-        """Saves new survey response in mysql db and returns id
+    async def save(survey: Survey, user: User):
+        """Saves new survey response in mysql db and returns its instance
 
-        :param model: List of sur
-        :type model: List[Survey, Response]
+        :param survey: Survey instance
+        :type survey: Survey
+        :param user: User instance
+        :type user: User
         :return: SurveyResponse instance
         :rtype: SurveyResponse
         """
         # TODO put info in survey response table
         # info: survey_id, user_id
+        # get id of insertion
+        # get survey response instance
         pass

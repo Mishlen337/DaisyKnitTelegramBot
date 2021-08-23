@@ -4,7 +4,6 @@ from contracts import contract
 from datetime import datetime
 from numpy import uint32
 # from utils.db_api.consts import RawConnection as cn
-from utils.db_api.models.abstract_saver import AbstractSaver
 
 
 class User:
@@ -57,17 +56,9 @@ class User:
         # Make user instance
         pass
 
-
-class UserSaver(AbstractSaver):
-    """Class to declare saver to put user model in mysql db."""
-
-    @staticmethod
-    @contract
-    async def save(model: User):
+    async def save(self):
         """Saves user in mysql db
 
-        :param model: User instance
-        :type model: User
         """
         # TODO put info in user table
         # info: users info

@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`question_order` (
   `question_id` INT UNSIGNED NOT NULL,
   `survey_id` INT UNSIGNED NOT NULL,
   `order` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`question_id`, `survey_id`),
+  PRIMARY KEY (`question_id`, `survey_id`, `order`),
   INDEX `fk_survey_id_idx` (`survey_id` ASC) VISIBLE,
   CONSTRAINT `fk_qo_question_id`
     FOREIGN KEY (`question_id`)

@@ -27,3 +27,7 @@ class Survey:
         :rtype: List[uint32]
         """
         pass
+
+    async def save(self):
+        """Saves new survey in mysql db
+        """

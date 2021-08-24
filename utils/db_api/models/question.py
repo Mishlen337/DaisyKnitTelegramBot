@@ -1,6 +1,6 @@
 """Model to declare classes related with question."""
 from numpy import uint32
-from typing import List
+from typing import List, Dict
 from contracts import contract
 from utils.db_api.consts import RawConnection as cn
 
@@ -21,25 +21,27 @@ class Question:
         ON q.question_type_id = qt.id
         WHERE q.name = %s;"""
         params = (self.name,)
-        info = await cn._make_request(sql, params)
-        self.id = info[0]
-        self.name_eng = info[1]
-        self.type = info[2]
+        info = await cn._make_request(sql, params, True)
+        print(info)
+        if info is None:
+            return
+        self.id = info['id']
+        self.name_eng = info['name_eng']
+        self.type = info['name']
 
-    @contract
-    async def get_response_choices(self) -> List[str]:
+    async def get_response_choices(self) -> List[Dict[str, str]]:
         """Gets response choices from mysql db
 
         :return: List of responses choices
         :rtype: List[str]
         """
         sql = """SELECT rc.name FROM daisyKnitSurvey.response_choice_order rco
-        JOIN daisyKnitSurvey.responce_choice rc
+        JOIN daisyKnitSurvey.response_choice rc
         ON rco.response_choice_id = rc.id
         WHERE rco.question_id = %s;"""
         params = (self.id,)
         info = await cn._make_request(sql, params, True, True)
-        # TODO smth with info
+        assert not (info is None), "Responses choices of questions is empty"
         return info
 
     async def save(self):

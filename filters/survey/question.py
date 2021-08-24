@@ -11,7 +11,6 @@ class QuestionValidFilter(BoundFilter):
 
     key = "question_is_valid"
 
-    @contract
     def check(self,
               question: Union[CallbackQuery, PollAnswer, Message]) -> bool:
         """Checks whether question is valid or not.

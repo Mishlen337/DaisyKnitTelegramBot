@@ -3,6 +3,7 @@
 from aiogram.dispatcher.filters import BoundFilter
 from aiogram import types
 from contracts import contract
+from utils.db_api.models.survey import Survey
 
 
 class SurveyActiveFilter(BoundFilter):
@@ -28,17 +29,19 @@ class SurveyActiveFilter(BoundFilter):
 class SurveyValidFilter(BoundFilter):
     """Filter to check whether survey name is valid or not."""
 
-    key = "survey_is_valid"
+    key = "is_survey"
 
-    @contract
-    def check(self, call: types.CallbackQuery) -> bool:
-        """Checks whether survey is valid or not
+    def __init__(self, is_survey: bool):
+        self.is_survey = is_survey
+
+    async def check(self, call: types.CallbackQuery) -> bool:
+        """Checks whether survey should be started or not
 
         :param call: Callback instance caused by the inline button
         :type call: types.CallbackQuery
-        :return: whether survey is valid or not
+        :return: whether survey should be started or not
         :rtype: bool
         """
-        # TODO get survey id by callback name using mysql db
-        # if id = None - False else true
-        return False
+        survey = Survey(call.data)
+        await survey.set_info_db()
+        return not (survey.id is None) == self.is_survey

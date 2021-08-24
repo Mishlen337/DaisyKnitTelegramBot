@@ -1,13 +1,17 @@
 """Modules to declare handlers for surveys respones."""
 
-from typing import Union
+from typing import Dict, Union, List
 from contracts import contract
 from aiogram.types import CallbackQuery, Message, PollAnswer
 from aiogram.dispatcher.storage import FSMContext
+from numpy import uint32
+from utils.db_api.models.survey_response import SurveyResponse
+from utils.db_api.models.question import Question
+from utils.db_api.models.response import Response
+from data.events import responses_survey_manager
 
-
-@contract
-async def get_response(response: Union[CallbackQuery, Message, PollAnswer],
+# Union[CallbackQuery, Message, PollAnswer]
+async def get_response(response: PollAnswer,
                        state: FSMContext):
     """Response handler to get response
 
@@ -17,6 +21,26 @@ async def get_response(response: Union[CallbackQuery, Message, PollAnswer],
     :type state: FSMContext
     """
     # TODO get name of the survey from state data
+    state_data: Dict[uint32, List[str, str]] = await state.get_data()
+    survey_response_id = next(iter(state_data))
+    survey_response = SurveyResponse(survey_response_id)
+    await survey_response.set_info_db()
+    user = survey_response.user
+    question_name = state_data[survey_response_id].pop(0)['name']
+    question = Question(question_name)
+    question_response = Response(question, survey_response, user)
+
+    if type(response) == 'aiogram.types.base.MetaTelegramObject':
+        answer = str(response)
+        print(answer)
+        question_response.answer = answer
+
+    await question_response.save()
+    
+    await state.set_data(state_data)
+    if (state_data[survey_response_id] == []):
+        responses_survey_manager.notify()
+   
     # Get survey response instance
     # Get Survey instance
     # Get question to a survey id from state data(pop)
@@ -24,10 +48,10 @@ async def get_response(response: Union[CallbackQuery, Message, PollAnswer],
     # if list of question id is empty - notify SurveyResponse
     # Get next question to a survey id from state data
     # else send next question using type (another function)
-    pass
+    
 
 
-@contract
+
 async def get_response_error(response: Union[CallbackQuery,
                                              Message,
                                              PollAnswer],

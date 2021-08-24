@@ -24,12 +24,12 @@ class SurveyResponse:
         WHERE sr.id = %s;"""
         params = (self.id,)
         info = await cn._make_request(sql, params)
+        print(info)
         survey_id = info[0]
         self.survey = Survey(survey_id)
         user_id_tel = info[1]
         self.user = User(user_id_tel)
 
-    @contract
     async def get_responses_db(self) -> Dict[str, str]:
         """Gets respones to this survey from mysql db
 
@@ -37,7 +37,7 @@ class SurveyResponse:
         :rtype: Dict[str, str]
         """
         # TODO get responses from db
-        sql = """SELECT q.name, q.name_eng, r.answer FROM daisyKnitSurvey.response r
+        sql = """SELECT q.name_eng, r.answer FROM daisyKnitSurvey.response r
         JOIN daisyKnitSurvey.question q ON r.question_id = q.id
         WHERE r.user_id = %s AND r.survey_response_id = %s;
         """
@@ -59,8 +59,15 @@ class SurveyResponse:
         :rtype: SurveyResponse
         """
         sql = """INSERT daisyKnitSurvey.survey_response (survey_id, user_id)
-        VALUE (%s, %s)
-        OUTPUT id;"""
+        VALUES (%s, %s);"""
         params = (survey.id, user.id)
-        id = await cn._make_request(sql, params, True)
-        return SurveyResponse(id)
+        await cn._make_request(sql, params)
+        sql = """SELECT LAST_INSERT_ID() as id
+        FROM daisyKnitSurvey.survey_response;"""
+        info = await cn._make_request(sql, fetch=True)
+        assert not (info is None), "Invalid insertion"
+        id = info['id']
+        survey_response = SurveyResponse(id)
+        survey_response.survey = survey
+        survey_response.user = user
+        return survey_response

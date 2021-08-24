@@ -2,7 +2,7 @@
 
 from contracts import contract
 from notifiers.abstracts import AbstractResponsesSurveyObserver
-
+from utils.db_api.models.survey_response import SurveyResponse
 
 class MindBoxResponsesSurveyNotifier(AbstractResponsesSurveyObserver):
     """Notifier to send responses to a survey to MindBox API."""
@@ -32,11 +32,11 @@ class LoggerResponsesSurveyNotifier(AbstractResponsesSurveyObserver):
         # template string of info
         pass
 
-    async def update(self, event_args):
+    async def update(self, event_args: SurveyResponse):
         """Logs info about responses in fil
 
         :param event_args: data of responses to a survey event
         :type event_args: [type]
         """
         # TODO Log info in file
-        pass
+        print(event_args.get_responses_db())

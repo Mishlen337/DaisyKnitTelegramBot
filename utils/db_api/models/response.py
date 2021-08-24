@@ -26,8 +26,10 @@ class Response:
         WHERE user_id = %s AND question_id = %s
         AND survey_response_id = %s;"""
         params = (self.user.id, self.question, self.survey_response.id)
-        answer = await cn._make_request(sql, params, True)
-        self.answer = answer
+        info = await cn._make_request(sql, params, True)
+        if info is None:
+            return
+        self.answer = info['answer']
 
     async def save(self):
         """Saves response in mysql db."""

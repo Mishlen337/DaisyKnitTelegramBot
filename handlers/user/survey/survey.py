@@ -2,23 +2,32 @@
 from aiogram import types
 from contracts import contract
 from aiogram.dispatcher.storage import FSMContext
+from utils.db_api.models.survey import Survey
+from utils.db_api.models.user import User
+from utils.db_api.models.survey_response import SurveyResponse
+from .utils import send_next_question
 
 
-@contract
 async def initiate_survey(call: types.CallbackQuery, state: FSMContext):
     """Callback handler of the inline button to start survey
 
     :param call: callback instance caused by the inline button
     :type call: types.CallbackQuery
     """
-    # TODO set state "Survey"
+    survey = Survey(call.data)
+    await survey.set_info_db()
+    user = User(call.from_user.id)
+    await user.set_info_db()
+    survey_response: SurveyResponse = await SurveyResponse.save(survey, user)
     # set survey response
-    # set_data to this state: survey_response_id: List[{question_id}, ...]
+    questions = await survey_response.survey.get_questions()
+    await state.set_data({survey_response.id: questions})
+    # set_data to this state: survey_response_id: List[{question_name}, ...]
+    await send_next_question(call.bot, call.from_user.id, await state.get_data())
+    await state.set_state("survey")
     # send first question, based on its type (another function)
-    pass
 
 
-@contract
 async def initiate_survey_error(call: types.CallbackQuery, state: FSMContext):
     """Callback handler of the inline button to send message about finishing
     previous survey
@@ -27,9 +36,9 @@ async def initiate_survey_error(call: types.CallbackQuery, state: FSMContext):
     :type call: types.CallbackQuery
     """
     # TODO send message about finishing previous survey
+    pass
 
 
-@contract
 async def log_initiate_survey(survey_name: str, user_id: str):
     """"Logs starting survey
 

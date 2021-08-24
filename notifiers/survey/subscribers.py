@@ -2,6 +2,8 @@
 
 import asyncio
 import aiohttp
+from aiogram import types
+import json
 from notifiers.abstracts import AbstractSurveyObserver
 from .event_args import SurveyEventArgs
 from data import config
@@ -24,15 +26,24 @@ class TelegramBotSurveyNotifier(AbstractSurveyObserver):
         :type event_args: SurveyEventArgs
         """
         user_id = event_args.user.user_id_tel
-        text = event_args.survey.name
-        
+        name = event_args.survey.name
+        text = event_args.survey.description
+        """button = {'text': 'Пройти опрос', 'callback_data': name}
+        markup = [[button]]
+        json_markup = json.dumps(markup)"""
+        keyboard = types.InlineKeyboardMarkup(row_width=1,
+                                              inline_keyboard=True)
+        button_phone = types.InlineKeyboardButton(text="Пройти опрос",
+                                                  callback_data=name)
+        keyboard.add(button_phone)
         async with aiohttp.ClientSession() as session:
             send_invitation_url = f"https://api.telegram.org/bot{config.BOT_TOKEN}/SendMessage"
             async with session.post(send_invitation_url,
                                     data={'chat_id': user_id,
-                                          'text': text}) as resp:
+                                          'text': text,
+                                          'reply_markup': keyboard}) as resp:
                 response = await resp.json()
-                print(response)
+                assert response['ok'], "Wrong Telegram API request"
 
 
 class LoggerSurveyNotifier(AbstractSurveyObserver):

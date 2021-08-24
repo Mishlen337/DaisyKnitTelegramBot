@@ -11,7 +11,7 @@ class RegistrationFilter(BoundFilter):
 
     key = "is_registered"
 
-    def __init__(self, is_registered):
+    def __init__(self, is_registered: bool):
         self.is_registered = is_registered
 
     async def check(self, message: types.Message) -> bool:

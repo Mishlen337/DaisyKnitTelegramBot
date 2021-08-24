@@ -19,16 +19,16 @@ class SurveyResponse:
     async def set_info_db(self):
         """Gets info about question from mysql db."""
 
-        sql = """SELECT sr.survey_id, u.user_id_tel FROM daisyKnitSurvey.survey_response sr
+        sql = """SELECT s.name, u.user_id_tel FROM daisyKnitSurvey.survey_response sr
         JOIN daisyKnitSurvey.User u ON sr.user_id = u.id
+        JOIN daisyKnitSurvey.Survey s ON sr.survey_id = s.id
         WHERE sr.id = %s;"""
         params = (self.id,)
         info = await cn._make_request(sql, params, True)
-        print(info)
         if info is None:
             return
-        survey_id = info['survey_id']
-        self.survey = Survey(survey_id)
+        survey_name = info['name']
+        self.survey = Survey(survey_name)
         await self.survey.set_info_db()
         user_id_tel = info['user_id_tel']
         self.user = User(user_id_tel)

@@ -2,6 +2,7 @@
 from aiogram import types
 from contracts import contract
 from aiogram.dispatcher.storage import FSMContext
+from aiogram.types.inline_keyboard import InlineKeyboardMarkup
 from utils.db_api.models.survey import Survey
 from utils.db_api.models.user import User
 from utils.db_api.models.survey_response import SurveyResponse
@@ -19,11 +20,15 @@ async def initiate_survey(call: types.CallbackQuery, state: FSMContext):
     user = User(call.from_user.id)
     await user.set_info_db()
     survey_response: SurveyResponse = await SurveyResponse.save(survey, user)
-    # set survey response
+
     questions = await survey_response.survey.get_questions()
     await state.set_data({survey_response.id: questions})
-    # set_data to this state: survey_response_id: List[{question_name}, ...]
-    await send_next_question(call.bot, call.from_user.id, await state.get_data())
+
+    await call.bot.edit_message_reply_markup(call.from_user.id,
+                                             call.message.message_id,
+                                             reply_markup=InlineKeyboardMarkup())
+    await send_next_question(call.bot, call.from_user.id,
+                             await state.get_data())
     await state.set_state("survey_state")
     # send first question, based on its type (another function)
 

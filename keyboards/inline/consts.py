@@ -8,7 +8,8 @@ from . import utils
 
 class InlineConstructor:
     @staticmethod
-    def _create_kb(actions: List[Tuple[str, Dict[str, str], CallbackData]], schema: List[int]) -> InlineKeyboardMarkup:
+    def _create_kb(actions: List[Tuple[str, Dict[str, str], CallbackData]],
+                   schema: List[int]) -> InlineKeyboardMarkup:
         btns = []
         for a, b, c in actions:
             btns.append(

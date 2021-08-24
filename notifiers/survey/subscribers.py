@@ -3,7 +3,6 @@
 import asyncio
 import aiohttp
 from aiogram import types
-import json
 from notifiers.abstracts import AbstractSurveyObserver
 from .event_args import SurveyEventArgs
 from data import config
@@ -34,7 +33,7 @@ class TelegramBotSurveyNotifier(AbstractSurveyObserver):
         keyboard = types.InlineKeyboardMarkup(row_width=1,
                                               inline_keyboard=True)
         button = types.InlineKeyboardButton(text="Пройти опрос",
-                                                  callback_data=name)
+                                            callback_data=name)
         keyboard.add(button)
         async with aiohttp.ClientSession() as session:
             send_invitation_url = f"https://api.telegram.org/bot{config.BOT_TOKEN}/SendMessage"

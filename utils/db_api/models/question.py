@@ -22,7 +22,6 @@ class Question:
         WHERE q.name = %s;"""
         params = (self.name,)
         info = await cn._make_request(sql, params, True)
-        print(info)
         if info is None:
             return
         self.id = info['id']

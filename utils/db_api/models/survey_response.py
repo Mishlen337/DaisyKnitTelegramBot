@@ -23,12 +23,16 @@ class SurveyResponse:
         JOIN daisyKnitSurvey.User u ON sr.user_id = u.id
         WHERE sr.id = %s;"""
         params = (self.id,)
-        info = await cn._make_request(sql, params)
+        info = await cn._make_request(sql, params, True)
         print(info)
-        survey_id = info[0]
+        if info is None:
+            return
+        survey_id = info['survey_id']
         self.survey = Survey(survey_id)
-        user_id_tel = info[1]
+        await self.survey.set_info_db()
+        user_id_tel = info['user_id_tel']
         self.user = User(user_id_tel)
+        await self.user.set_info_db()
 
     async def get_responses_db(self) -> Dict[str, str]:
         """Gets respones to this survey from mysql db
@@ -43,7 +47,6 @@ class SurveyResponse:
         """
         params = (self.user.id, self.id)
         info = await cn._make_request(sql, params, True, True)
-        # TODO make Dict
         return info
 
     @staticmethod

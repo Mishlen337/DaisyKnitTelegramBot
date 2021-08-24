@@ -1,5 +1,6 @@
 """Module to send question in Telegram Bot."""
 from typing import Dict, List
+from aiogram import types
 from numpy import uint32
 from aiogram.bot import Bot
 from utils.db_api.models.question import Question
@@ -18,7 +19,13 @@ async def send_next_question(bot: Bot, user_id: uint32,
         list_responses_choice = []
         for choice in responses_choice:
             list_responses_choice.append(choice['name'])
+
+        keyboard = types.InlineKeyboardMarkup(row_width=1)
+        button = types.InlineKeyboardButton(text="Дальше",
+                                            callback_data=question.id)
+        keyboard.add(button)
+
         await bot.send_poll(chat_id=user_id, question=question_name,
                             options=list_responses_choice, type='quiz',
                             correct_option_id=len(list_responses_choice) - 1,
-                            is_anonymous=False)
+                            is_anonymous=False)  # reply_markup=keyboard)

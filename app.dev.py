@@ -28,4 +28,4 @@ if __name__ == "__main__":
                       parse_mode=aiogram.types.ParseMode.HTML)
     dp = Dispatcher(bot, storage=storage)
     aiogram.executor.start_polling(dispatcher=dp, on_startup=on_startup,
-                                   on_shutdown=on_shutdown)
+                                   on_shutdown=on_shutdown, skip_updates=True)

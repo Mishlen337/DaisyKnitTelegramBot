@@ -9,6 +9,8 @@ from utils.db_api.models.survey_response import SurveyResponse
 from utils.db_api.models.question import Question
 from utils.db_api.models.response import Response
 from data.events import responses_survey_manager
+from .utils import send_next_question
+
 
 # Union[CallbackQuery, Message, PollAnswer]
 async def get_response(response: PollAnswer,
@@ -30,17 +32,20 @@ async def get_response(response: PollAnswer,
     question = Question(question_name)
     question_response = Response(question, survey_response, user)
 
+    print(type(response))
     if type(response) == 'aiogram.types.base.MetaTelegramObject':
         answer = str(response)
         print(answer)
         question_response.answer = answer
 
     await question_response.save()
-    
+
     await state.set_data(state_data)
+
     if (state_data[survey_response_id] == []):
-        responses_survey_manager.notify()
-   
+        responses_survey_manager.notify(survey_response)
+    else:
+        send_next_question(response.bot, user.user_id_tel, state_data)
     # Get survey response instance
     # Get Survey instance
     # Get question to a survey id from state data(pop)
@@ -48,8 +53,6 @@ async def get_response(response: PollAnswer,
     # if list of question id is empty - notify SurveyResponse
     # Get next question to a survey id from state data
     # else send next question using type (another function)
-    
-
 
 
 async def get_response_error(response: Union[CallbackQuery,

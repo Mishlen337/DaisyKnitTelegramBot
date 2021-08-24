@@ -33,9 +33,9 @@ class TelegramBotSurveyNotifier(AbstractSurveyObserver):
         json_markup = json.dumps(markup)"""
         keyboard = types.InlineKeyboardMarkup(row_width=1,
                                               inline_keyboard=True)
-        button_phone = types.InlineKeyboardButton(text="Пройти опрос",
+        button = types.InlineKeyboardButton(text="Пройти опрос",
                                                   callback_data=name)
-        keyboard.add(button_phone)
+        keyboard.add(button)
         async with aiohttp.ClientSession() as session:
             send_invitation_url = f"https://api.telegram.org/bot{config.BOT_TOKEN}/SendMessage"
             async with session.post(send_invitation_url,

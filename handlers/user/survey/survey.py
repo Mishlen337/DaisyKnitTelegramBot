@@ -24,7 +24,7 @@ async def initiate_survey(call: types.CallbackQuery, state: FSMContext):
     await state.set_data({survey_response.id: questions})
     # set_data to this state: survey_response_id: List[{question_name}, ...]
     await send_next_question(call.bot, call.from_user.id, await state.get_data())
-    await state.set_state("survey")
+    await state.set_state("survey_state")
     # send first question, based on its type (another function)
 
 

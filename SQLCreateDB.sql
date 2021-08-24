@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`user` (
   `middle_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
   `email` VARCHAR(45) NULL,
-  `telephone` VARCHAR(16) NULL DEFAULT NULL,
+  `telephone` VARCHAR(16) NOT NULL,
   `authorized` BOOLEAN NULL,
   `created` DATETIME NOT NULL,
   PRIMARY KEY (`id`),

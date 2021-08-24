@@ -26,6 +26,6 @@ if __name__ == "__main__":
     storage = MemoryStorage()
     bot = aiogram.Bot(token=config.BOT_TOKEN,
                       parse_mode=aiogram.types.ParseMode.HTML)
-    dp = Dispatcher(bot, storage=MemoryStorage())
+    dp = Dispatcher(bot, storage=storage)
     aiogram.executor.start_polling(dispatcher=dp, on_startup=on_startup,
                                    on_shutdown=on_shutdown)

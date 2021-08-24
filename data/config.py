@@ -18,11 +18,14 @@ MYSQL_IP = env.str('MYSQL_IP')
 MYSQL_USER = env.str('MYSQL_USER')
 MYSQL_PASSWORD = env.str('MYSQL_PASSWORD')
 
+# Redis settings
+REDIS_IP = env.str('REDIS_IP')
+
 admins = []
 
 ip = {
     'db':    MYSQL_IP,
-    'redis': '127.0.0.1.',
+    'redis': REDIS_IP,
 }
 
 mysql_info = {

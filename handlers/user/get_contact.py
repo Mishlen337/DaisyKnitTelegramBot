@@ -22,6 +22,7 @@ async def get_contact(msg: types.Message, state: FSMContext):
     user.telephone = msg.contact.phone_number
     # TODO get info from MindBox
     await user.save()
+    user.first_name = 'lol'
     # Reply user that user is saved in db
     keyboard = types.ReplyKeyboardRemove()
     await msg.bot.send_message(msg.from_user.id,

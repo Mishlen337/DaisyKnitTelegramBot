@@ -7,7 +7,8 @@ from .get_contact import get_contact
 
 def setup(dp: Dispatcher):
 
-    dp.register_message_handler(bot_start, commands="start")
+    dp.register_message_handler(bot_start, commands="start",
+                                is_registered=False)
     dp.register_message_handler(bot_help, commands="help",
                                 state="initial_state")
     dp.register_message_handler(get_contact, content_types="contact",

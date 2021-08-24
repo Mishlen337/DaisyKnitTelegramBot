@@ -16,9 +16,9 @@ class User:
         self.last_name: str = None
         self.email: str = None
         self.telephone: str = None
-        self.is_authorized: bool = None
+        self.authorized: bool = None
         # time when user joined in telegram bot
-        self.created_at: datetime = None
+        self.created: datetime = None
 
     @property
     def is_registered(self) -> bool:
@@ -27,9 +27,9 @@ class User:
         :return: shared his/her telephone or not
         :rtype: bool
         """
-        if not (self.telephone is None):
-            return True
-        return False
+        if self.telephone is None:
+            return False
+        return True
 
     async def set_info_db(self):
         """Sets info about user from mysql."""
@@ -37,19 +37,21 @@ class User:
         sql = """
         SELECT id, first_name, middle_name, last_name, email,
         telephone, authorized, created FROM daisyKnitSurvey.user
-        WHERE user_tel_id = %s;
+        WHERE user_id_tel = %s;
         """
         params = (self.user_id_tel,)
         info = await cn._make_request(sql, params, True)
-        self.id = info[0]
-        self.first_name = info[1]
-        self.middle_name = info[2]
-        self.last_name = info[3]
-        self.email = info[4]
-        self.telephone = info[5]
-        self.is_authorized = info[6]
+        if info is None:
+            return
+        self.id = info['id']
+        self.first_name = info['first_name']
+        self.middle_name = info['middle_name']
+        self.last_name = info['last_name']
+        self.email = info['email']
+        self.telephone = info['telephone']
+        self.authorized = info['authorized']
         # time when user joined in telegram bot
-        self.created_at = info[7]
+        self.created = info['created']
 
     @staticmethod
     @contract
@@ -77,10 +79,14 @@ class User:
         INSERT INTO daisyKnitSurvey.user
         (user_id_tel, first_name, middle_name, last_name,
         email, telephone, authorized, created)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        AS new(u, f, m, l, e, t, a, c)
+        ON DUPLICATE KEY UPDATE first_name = f,
+        middle_name = m, last_name = l,
+        email = e, authorized = a;
         """
         # self.created_at = datetime.now()
         params = (self.user_id_tel, self.first_name, self.middle_name,
                   self.last_name, self.email, self.telephone,
-                  self.is_authorized, self.created_at)
+                  self.authorized, self.created)
         await cn._make_request(sql, params)

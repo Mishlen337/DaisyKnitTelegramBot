@@ -94,5 +94,5 @@ async def finish(message: Message, state: FSMContext):
     """Handler to finish survey."""
     await state.set_state("initial_state")
     await state.reset_data()
-    await message.bot.send_message(message.from_user.id, text="Преждевременно завершили отчет.")
+    await message.bot.send_message(message.from_user.id, text="Преждевременно завершен опрос.")
 

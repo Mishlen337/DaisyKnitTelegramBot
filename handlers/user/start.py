@@ -3,7 +3,6 @@ from aiogram.dispatcher.storage import FSMContext
 from contracts import contract
 
 
-@contract
 async def bot_start(msg: types.Message, state: FSMContext):
     """Handler to register user in his/her first entry
 
@@ -21,3 +20,15 @@ async def bot_start(msg: types.Message, state: FSMContext):
     await msg.bot.send_message(msg.from_user.id, "Отправьте номер телефона",
                                reply_markup=keyboard)
     await state.set_state("telephone_state")
+
+
+async def bot_start_error(msg: types.Message, state: FSMContext):
+    """Handler to register bot start error
+
+    :param msg: Message instance caused by received message
+    :type msg: types.Message
+    :param state: FSMContext instance
+    :type state: FSMContext
+    """
+    await msg.bot.send_message(msg.from_user.id, "Вы уже зарегистрированны в боте.")
+    await state.set_state("initial_state")

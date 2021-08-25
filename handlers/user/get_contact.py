@@ -10,7 +10,6 @@ from utils.midbox.mindbox import MindBox
 from notifiers.survey.event_args import SurveyEventArgs
 
 
-@contract
 async def get_contact(msg: types.Message, state: FSMContext):
     """Handler to get telephone number
 
@@ -34,3 +33,14 @@ async def get_contact(msg: types.Message, state: FSMContext):
     event_args = SurveyEventArgs(user, survey)
     await events.survey_manager.notify(event_args)
     await state.set_state("initial_state")
+
+
+async def get_contact_error(msg: types.Message, state: FSMContext):
+    """Handler to get telephone number error
+
+    :param msg: Message instance caused by sending contact
+    :type msg: types.Message
+    :param state: FSMContext instance
+    :type state: FSMContext
+    """
+    await msg.bot.send_message(msg.from_user.id, "Пожалуста, поделитесь телефоном")

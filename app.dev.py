@@ -11,8 +11,7 @@ async def on_startup(dp: Dispatcher):
     import middlewares
     filters.setup(dp)
     middlewares.setup(dp)
-    handlers.errors.setup(dp)
-    handlers.user.setup(dp)
+    handlers.setup(dp)
 
 
 async def on_shutdown(dp: Dispatcher):

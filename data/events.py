@@ -10,4 +10,3 @@ _subscribers = [LoggerSurveyNotifier(), TelegramBotSurveyNotifier()]
 survey_manager = SurveyManager()
 for sub in _subscribers:
     survey_manager.subscribe(sub)
-

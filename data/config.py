@@ -21,7 +21,9 @@ MYSQL_PASSWORD = env.str('MYSQL_PASSWORD')
 # Redis settings
 REDIS_IP = env.str('REDIS_IP')
 
-admins = []
+ADMIN = env.str('ADMIN')
+
+admins = [ADMIN]
 
 ip = {
     'db':    MYSQL_IP,

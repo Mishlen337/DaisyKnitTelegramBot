@@ -20,10 +20,14 @@ MYSQL_PASSWORD = env.str('MYSQL_PASSWORD')
 
 # Redis settings
 REDIS_IP = env.str('REDIS_IP')
+REDIS_PASSWORD = env.str('REDIS_PASSWORD')
 
-ADMIN = env.str('ADMIN')
 
-admins = [ADMIN]
+ADMIN = env.int('ADMIN')
+
+
+admins = [ADMIN, ]
+print(admins)
 
 ip = {
     'db':    MYSQL_IP,
@@ -42,8 +46,8 @@ mysql_info = {
 aiogram_redis = {
     'host':     ip['redis'],
     'port':     6379,
-    'password': '',
-    'db':       ''
+    'password': REDIS_PASSWORD,
+    'db':       5
 }
 
 redis = {

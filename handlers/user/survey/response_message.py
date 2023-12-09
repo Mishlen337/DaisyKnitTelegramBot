@@ -1,25 +1,26 @@
 """Modules to declare handlers for surveys message respones."""
-
-from typing import Dict, Union, List
-from contracts import contract
-from aiogram.types import CallbackQuery, Message, PollAnswer
-from aiogram.dispatcher.storage import FSMContext
 from numpy import uint32
-from utils.db_api.models.survey_response import SurveyResponse
+from loguru import logger
+from typing import Dict, List
+
+from aiogram import Dispatcher
+from aiogram.types import Message
+from aiogram.dispatcher.storage import FSMContext
+
+from .utils import send_next_question
 from utils.db_api.models.question import Question
 from utils.db_api.models.response import Response
-from .utils import send_next_question
+from utils.db_api.models.survey_response import SurveyResponse
 from notifiers.survey_response.manager import ResponsesSurveyManager
-from notifiers.survey_response.subscribers import \
-    MindBoxResponsesSurveyNotifier, LoggerResponsesSurveyNotifier
+from notifiers.survey_response.subscribers import ResponsesSurveyManagersNotifier, LoggerResponsesSurveyNotifier
 
 
 class ResponseMessage:
     """Class to declare handler of callback and message response."""
 
-    def __init__(self):
+    def __init__(self, dp: Dispatcher):
         _rs_subscribers = [LoggerResponsesSurveyNotifier(),
-                           MindBoxResponsesSurveyNotifier()]
+                           ResponsesSurveyManagersNotifier(dp)]
         self.responses_survey_manager = ResponsesSurveyManager()
         for sub in _rs_subscribers:
             self.responses_survey_manager.subscribe(sub)
@@ -32,33 +33,34 @@ class ResponseMessage:
         :param state: State instance with survey and question data
         :type state: FSMContext
         """
-        user_id_tel = response.from_user.id
-        state_data: Dict[uint32, List[str, str]] = await state.get_data()
+        try:
+            user_id_tel = response.from_user.id
+            survey: Dict[uint32, List[str, str]] = (await state.get_data())["survey"]
 
-        survey_response_id = next(iter(state_data))
-        survey_response = SurveyResponse(survey_response_id)
-        await survey_response.set_info_db()
-        user = survey_response.user
-        question_name = state_data[survey_response_id].pop(0)['name']
-        question = Question(question_name)
-        await question.set_info_db()
+            survey_response_id = next(iter(survey))
+            survey_response = SurveyResponse(survey_response_id)
+            await survey_response.set_info_db()
+            user = survey_response.user
+            question_name = survey[survey_response_id].pop(0)['name']
+            question = Question(question_name)
+            await question.set_info_db()
 
-        question_response = Response(question, survey_response, user)
-        question_response.answer = response.text
-        await question_response.save()
+            question_response = Response(question, survey_response, user)
+            question_response.answer = response.text
+            await question_response.save()
 
-        await state.set_data(data=state_data)
+            if (survey[survey_response_id] == []):
+                await response.bot.send_message(user_id_tel, text="Спасибо за опрос:)")
+                await state.set_state(state="initial_state")
+                await state.reset_data()
+                await self.responses_survey_manager.notify(survey_response)
+            else:
+                sent_message = await send_next_question(response.bot, user.user_id_tel, survey)
+                await state.set_data({"survey": survey, "last_question_message_id": sent_message.message_id})
 
-        if (state_data[survey_response_id] == []):
-            await self.responses_survey_manager.notify(survey_response)
-            await response.bot.send_message(user_id_tel,
-                                            text="Спасибо за опрос:)")
-            await state.set_state(state="initial_state")
-            await state.reset_data()
-        else:
-            await send_next_question(response.bot, user.user_id_tel,
-                                     state_data)
-
+        except Exception as ex:
+            logger.error(ex)
+            await response.bot.send_message(response.from_user.id, "Проблемы с базой данных. Попробуйте позже! Поддержка @mishlen25")
 
 async def get_response_error(response: Message,
                              state: FSMContext):
@@ -92,7 +94,6 @@ async def log_response(user_id: str, response: str):
 
 async def finish(message: Message, state: FSMContext):
     """Handler to finish survey."""
-    await state.set_state("initial_state")
     await state.reset_data()
+    await state.set_state("initial_state")
     await message.bot.send_message(message.from_user.id, text="Преждевременно завершен опрос.")
-

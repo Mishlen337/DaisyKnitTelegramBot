@@ -1,5 +1,5 @@
 """Module to declare users response."""
-
+from datetime import datetime
 from .question import Question
 from .survey_response import SurveyResponse
 from .user import User
@@ -18,6 +18,7 @@ class Response:
         self.question = question
         self.survey_response = survey_response
         self.answer = answer
+        self.created = None
 
     async def set_info_db(self):
         """Sets string response from mysql db."""
@@ -34,8 +35,9 @@ class Response:
     async def save(self):
         """Saves response in mysql db."""
         sql = """INSERT daisyKnitSurvey.response
-        (user_id, question_id, survey_response_id, answer)
-        VALUE (%s, %s, %s, %s);"""
+        (user_id, question_id, survey_response_id, answer, created)
+        VALUE (%s, %s, %s, %s, %s);"""
+        self.created = datetime.now()
         params = (self.user.id, self.question.id, self.survey_response.id,
-                  self.answer)
+                  self.answer, self.created)
         await cn._make_request(sql, params)

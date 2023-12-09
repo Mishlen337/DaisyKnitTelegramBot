@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS `daisyKnitSurvey` DEFAULT CHARACTER SET utf8mb4 ;
 
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`user` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id_tel` INT UNSIGNED NOT NULL,
+  `user_id_tel` BIGINT UNSIGNED NOT NULL,
   `first_name` VARCHAR(45) NULL,
   `middle_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
@@ -40,11 +40,9 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`question` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
-  `name_eng` VARCHAR(255) NOT NULL,
   `question_type_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE,
-  UNIQUE INDEX `name_eng_UNIQUE` (`name_eng` ASC) VISIBLE,
   INDEX `fk_question_type_id_idx` (`question_type_id` ASC) VISIBLE,
   CONSTRAINT `fk_question_type_id`
     FOREIGN KEY (`question_type_id`)
@@ -113,6 +111,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`response` (
   `question_id` INT UNSIGNED NOT NULL,
   `survey_response_id` INT UNSIGNED NOT NULL,
   `answer` VARCHAR(255) NOT NULL,
+  `created` DATETIME NOT NULL,
   PRIMARY KEY (`user_id`, `question_id`, `survey_response_id`),
   INDEX `fk_r_question_id_idx` (`question_id` ASC) VISIBLE,
   INDEX `fk_r_survey_response_id_idx` (`survey_response_id` ASC) VISIBLE,

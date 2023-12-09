@@ -1,7 +1,7 @@
 """Model to declare classes related with question."""
 from numpy import uint32
 from typing import List, Dict
-from contracts import contract
+
 from utils.db_api.consts import RawConnection as cn
 
 
@@ -11,12 +11,11 @@ class Question:
     def __init__(self, name: str):
         self.name = name
         self.id: uint32 = None
-        self.name_eng: str = None
         self.type: str = None
 
     async def set_info_db(self):
         """Sets info about question from mysql db to fields."""
-        sql = """SELECT q.id, q.name_eng, qt.name FROM daisyKnitSurvey.question q
+        sql = """SELECT q.id, qt.name FROM daisyKnitSurvey.question q
         JOIN daisyKnitSurvey.question_type qt
         ON q.question_type_id = qt.id
         WHERE q.name = %s;"""
@@ -25,7 +24,6 @@ class Question:
         if info is None:
             return
         self.id = info['id']
-        self.name_eng = info['name_eng']
         self.type = info['name']
 
     async def get_response_choices(self) -> List[Dict[str, str]]:

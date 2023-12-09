@@ -1,8 +1,8 @@
 import aiogram
 from aiogram import Dispatcher
 from data import config
-from aiogram.contrib.fsm_storage.redis import RedisStorage
-# from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.contrib.fsm_storage.redis import RedisStorage2
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 
 async def on_startup(dp: Dispatcher):
@@ -21,7 +21,7 @@ async def on_shutdown(dp: Dispatcher):
 
 
 if __name__ == "__main__":
-    storage = RedisStorage(**config.aiogram_redis)
+    storage = RedisStorage2(**config.aiogram_redis)
     # storage = MemoryStorage()
     bot = aiogram.Bot(token=config.BOT_TOKEN,
                       parse_mode=aiogram.types.ParseMode.HTML)

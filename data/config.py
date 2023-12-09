@@ -1,45 +1,43 @@
+import json
 from environs import Env
 
 # Теперь используем вместо библиотеки python-dotenv библиотеку environs
 env = Env()
-env.read_env("./.env.dev.local")
+env.read_env("./.env")
 
+# BOT settings
 BOT_TOKEN = env.str("BOT_TOKEN")  # Забираем значение типа str
-ADMINS = []  # env.list("ADMINS")  # Тут у нас будет список из админов
 
 BASE_URL = env.str('BASE_URL')  # Webhook domain
-WEBHOOK_BOT_PATH = f'/v1/webhook/bot/{BOT_TOKEN}'
+WEBHOOK_BOT_PATH = f'/webhook/bot/{BOT_TOKEN}'
 WEBHOOK_BOT_URL = f'{BASE_URL}{WEBHOOK_BOT_PATH}'
 
-CERT_PATH = env.str('WEBHOOK_SSL_CERT')
+ADMIN = env.int('ADMIN')
+MANAGER_TEL_IDS = env.list('MANAGER_TEL_IDS', subcast=int)
+admins = [ADMIN, ]
+SURVEY_NAME = env.str('SURVEY_NAME')
 
 # MySQL settings
-MYSQL_IP = env.str('MYSQL_IP')
+MYSQL_HOST = env.str('MYSQL_HOST')
+MYSQL_DATABASE = env.str('MYSQL_DATABASE')
 MYSQL_USER = env.str('MYSQL_USER')
 MYSQL_PASSWORD = env.str('MYSQL_PASSWORD')
 
 # Redis settings
-REDIS_IP = env.str('REDIS_IP')
+REDIS_HOST = env.str('REDIS_HOST')
 REDIS_PASSWORD = env.str('REDIS_PASSWORD')
 
 
-ADMIN = env.int('ADMIN')
-
-
-admins = [ADMIN, ]
-print(admins)
-
 ip = {
-    'db':    MYSQL_IP,
-    'redis': REDIS_IP,
+    'db':    MYSQL_HOST,
+    'redis': REDIS_HOST,
 }
 
 mysql_info = {
     'host':     ip['db'],
     'user':     MYSQL_USER,
     'password': MYSQL_PASSWORD,
-    'db':       '',
-    'maxsize':  5,
+    'db':       MYSQL_DATABASE,
     'port':     3306,
 }
 
@@ -47,11 +45,11 @@ aiogram_redis = {
     'host':     ip['redis'],
     'port':     6379,
     'password': REDIS_PASSWORD,
-    'db':       5
+    'db':       10
 }
 
 redis = {
     'address':  (ip['redis'], 6379),
-    'password': '',
+    'password': REDIS_PASSWORD,
     'encoding': 'utf8'
 }

@@ -139,10 +139,6 @@ dmypy.json
 # webhook certificates
 webhook/
 
-# web application files
-app.py
-bot.py
-Dockerfile
 
 # DS_Store file
 .DS_Store

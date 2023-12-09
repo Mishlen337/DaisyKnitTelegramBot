@@ -1,6 +1,6 @@
 """Model to declare classes related with user."""
 
-from contracts import contract
+
 from datetime import datetime
 from numpy import uint32
 from utils.db_api.consts import RawConnection as cn
@@ -54,7 +54,6 @@ class User:
         self.created = info['created']
 
     @staticmethod
-    @contract
     async def get_user_by_telephone(tel: str):
         """Returns user by his telephone in db
 
@@ -85,7 +84,7 @@ class User:
         middle_name = m, last_name = l,
         email = e, authorized = a;
         """
-        # self.created_at = datetime.now()
+        self.created = datetime.now()
         params = (self.user_id_tel, self.first_name, self.middle_name,
                   self.last_name, self.email, self.telephone,
                   self.authorized, self.created)

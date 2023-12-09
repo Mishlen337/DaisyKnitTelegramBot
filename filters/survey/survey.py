@@ -1,8 +1,9 @@
 """Module to declare filters for a survey."""
 
 from aiogram.dispatcher.filters import BoundFilter
+from loguru import logger
 from aiogram import types
-from contracts import contract
+
 from utils.db_api.models.survey import Survey
 
 
@@ -11,7 +12,6 @@ class SurveyActiveFilter(BoundFilter):
 
     key = "survey_is_active"
 
-    @contract
     def check(self, call: types.CallbackQuery) -> bool:
         """Checks whether survey is active or not
 
@@ -42,6 +42,12 @@ class SurveyValidFilter(BoundFilter):
         :return: whether survey should be started or not
         :rtype: bool
         """
-        survey = Survey(call.data)
-        await survey.set_info_db()
-        return not (survey.id is None) == self.is_survey
+        try:
+            survey = Survey(call.data)
+            await survey.set_info_db()
+            return not (survey.id is None) == self.is_survey
+
+        except Exception as ex:
+            logger.error(ex)
+            await call.bot.send_message(call.from_user.id, "Проблемы с базой данных. Попробуйте позже! Поддержка @mishlen25")
+            return False

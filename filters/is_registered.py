@@ -2,7 +2,7 @@
 
 from aiogram import types
 from aiogram.dispatcher.filters import BoundFilter
-from contracts import contract
+
 from utils.db_api.models.user import User
 
 

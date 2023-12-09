@@ -1,0 +1,49 @@
+version: '3'
+services:
+  bot:
+    build: .
+    container_name: survey_bot
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - 'db'
+      - 'redis'
+    ports:
+        - 7777:7777
+
+  db:
+    image: mysql
+    container_name: ${MYSQL_HOST}
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    # command: '--init-file /docker-entrypoint-initdb.d/init.sql'
+    ports:
+      # <Port exposed> : <MySQL Port running inside container>
+      - 3306:3306
+    volumes:
+      - /opt/survey_db/mysql:/var/lib/mysql
+      - "./SQLCreateDB.sql:/docker-entrypoint-initdb.d/init.sql"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    ports:
+      - 8888:80
+    environment:
+      - PMA_ARBITRARY=1
+    depends_on:
+      - 'db'
+  
+  redis:
+    container_name: ${REDIS_HOST}
+    image: "bitnami/redis:latest"
+    env_file: .env
+    ports:
+      - 6379:6379
+    volumes:
+    - /opt/survey_db/redis_db:/var/lib/redis/data
+  

@@ -1,6 +1,7 @@
 """Module to declare handlers to start survey."""
 from aiogram import types
-from contracts import contract
+from loguru import logger
+
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.types.inline_keyboard import InlineKeyboardMarkup
 from utils.db_api.models.survey import Survey
@@ -15,22 +16,27 @@ async def initiate_survey(call: types.CallbackQuery, state: FSMContext):
     :param call: callback instance caused by the inline button
     :type call: types.CallbackQuery
     """
-    survey = Survey(call.data)
-    await survey.set_info_db()
-    user = User(call.from_user.id)
-    await user.set_info_db()
-    survey_response: SurveyResponse = await SurveyResponse.save(survey, user)
+    try:
+        survey = Survey(call.data)
+        await survey.set_info_db()
+        user = User(call.from_user.id)
+        await user.set_info_db()
+        survey_response: SurveyResponse = await SurveyResponse.save(survey, user)
 
-    questions = await survey_response.survey.get_questions()
-    await state.set_data({survey_response.id: questions})
+        questions = await survey_response.survey.get_questions()
+        survey = {survey_response.id: questions}
 
-    await call.bot.edit_message_reply_markup(call.from_user.id,
-                                             call.message.message_id,
-                                             reply_markup=InlineKeyboardMarkup())
-    await send_next_question(call.bot, call.from_user.id,
-                             await state.get_data())
-    await state.set_state("survey_state")
-    # send first question, based on its type (another function)
+        await call.bot.edit_message_reply_markup(call.from_user.id,
+                                                call.message.message_id,
+                                                reply_markup=InlineKeyboardMarkup())
+        sent_message = await send_next_question(call.bot, call.from_user.id, survey)
+
+        await state.set_data({"survey": survey, "last_question_message_id": sent_message.message_id})
+        await state.set_state("survey_state")
+
+    except Exception as ex:
+        logger.error(ex)
+        await call.bot.send_message(call.from_user.id, "Проблемы с базой данных. Попробуйте позже! Поддержка @mishlen25")
 
 
 async def initiate_survey_error(call: types.CallbackQuery, state: FSMContext):

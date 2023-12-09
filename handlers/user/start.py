@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
-from contracts import contract
+
 
 
 async def bot_start(msg: types.Message, state: FSMContext):
@@ -31,4 +31,11 @@ async def bot_start_error(msg: types.Message, state: FSMContext):
     :type state: FSMContext
     """
     await msg.bot.send_message(msg.from_user.id, "Вы уже зарегистрированны в боте.")
+    text = [
+        'Список команд: ',
+        '/help - Получить справку',
+        '/survey - Начать опрос',
+        '/finish - Завершить опрос',
+    ]
+    await msg.answer('\n'.join(text))
     await state.set_state("initial_state")

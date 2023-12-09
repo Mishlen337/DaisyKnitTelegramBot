@@ -1,7 +1,7 @@
 """Module to declare users responses to a survey."""
 
 from typing import Dict
-from contracts import contract
+
 from .user import User
 from .survey import Survey
 from utils.db_api.consts import RawConnection as cn
@@ -41,8 +41,9 @@ class SurveyResponse:
         :rtype: Dict[str, str]
         """
         # TODO get responses from db
-        sql = """SELECT q.name_eng, r.answer FROM daisyKnitSurvey.response r
+        sql = """SELECT u.telephone, q.name, r.answer, r.created FROM daisyKnitSurvey.response r
         JOIN daisyKnitSurvey.question q ON r.question_id = q.id
+        JOIN daisyKnitSurvey.user u ON u.id = r.user_id
         WHERE r.user_id = %s AND r.survey_response_id = %s;
         """
         params = (self.user.id, self.id)
@@ -50,7 +51,6 @@ class SurveyResponse:
         return info
 
     @staticmethod
-    @contract
     async def save(survey: Survey, user: User):
         """Saves new survey response in mysql db and returns its instance
 

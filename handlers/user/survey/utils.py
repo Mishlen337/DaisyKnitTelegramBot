@@ -24,16 +24,16 @@ async def send_next_question(bot: Bot, user_id_tel: uint32,
 
     question_template = f"[{question_num}/{question_count}] {question_name}"
 
-    if question.type == "quiz":
-        responses_choice = await question.get_response_choices()
-        list_responses_choice = []
-        for choice in responses_choice:
-            list_responses_choice.append(choice['name'])
+    # if question.type == "quiz":
+    #     responses_choice = await question.get_response_choices()
+    #     list_responses_choice = []
+    #     for choice in responses_choice:
+    #         list_responses_choice.append(choice['name'])
 
-        await bot.send_poll(chat_id=user_id_tel, question=question_template,
-                            options=list_responses_choice, type='quiz',
-                            correct_option_id=len(list_responses_choice) - 1,
-                            is_anonymous=False)
+    #     return await bot.send_poll(chat_id=user_id_tel, question=question_template,
+    #                         options=list_responses_choice, type='quiz',
+    #                         correct_option_id=len(list_responses_choice) - 1,
+    #                         is_anonymous=False)
 
     if question.type == "callback":
         responses_choice = await question.get_response_choices()
@@ -44,8 +44,8 @@ async def send_next_question(bot: Bot, user_id_tel: uint32,
                                 CallbackData("question", "name")))
         keyboard = ic._create_kb(actions=action_list,
                                  schema=[len(responses_choice)])
-        await bot.send_message(user_id_tel, text=question_template,
+        return await bot.send_message(user_id_tel, text=question_template,
                                reply_markup=keyboard)
 
     if question.type == "message":
-        await bot.send_message(user_id_tel, text=question_template)
+        return await bot.send_message(user_id_tel, text=question_template)

@@ -58,7 +58,7 @@ class ResponsesSurveyManagersNotifier(AbstractResponsesSurveyObserver):
         :type event_args: [type]
         """
         responses = await event_args.get_responses_db()
-        markdown_responses = pd.DataFrame(responses).to_markdown(index=False)
+        markdown_responses = pd.DataFrame(responses).T.to_markdown()
         for mtid in self.manager_tel_ids:
-            await self.dp.bot.send_message(chat_id=mtid, text='Новый опрос!')
+            await self.dp.bot.send_message(chat_id=mtid, text='Новый заказ/опрос!')
             await self.dp.bot.send_message(chat_id=mtid, text='<code>' + markdown_responses + '</code>', parse_mode="HTML")

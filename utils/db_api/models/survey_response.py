@@ -44,7 +44,7 @@ class SurveyResponse:
         :rtype: Dict[str, str]
         """
         # TODO get responses from db
-        sql = """SELECT u.telephone, q.name, r.answer, r.created FROM daisyKnitSurvey.response r
+        sql = """SELECT q.name, r.answer, r.created FROM daisyKnitSurvey.response r
         JOIN daisyKnitSurvey.question q ON r.question_id = q.id
         JOIN daisyKnitSurvey.user u ON u.id = r.user_id
         WHERE r.user_id = %s AND r.survey_response_id = %s;

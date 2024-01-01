@@ -9,7 +9,7 @@ env.read_env("./.env")
 BOT_TOKEN = env.str("BOT_TOKEN")  # Забираем значение типа str
 
 BASE_URL = env.str('BASE_URL')  # Webhook domain
-WEBHOOK_BOT_PATH = f'/webhook/bot/{BOT_TOKEN}'
+WEBHOOK_BOT_PATH = f'/bot/webhook/'
 WEBHOOK_BOT_URL = f'{BASE_URL}{WEBHOOK_BOT_PATH}'
 
 ADMIN = env.int('ADMIN')

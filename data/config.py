@@ -16,7 +16,7 @@ ADMIN = env.int('ADMIN')
 MANAGER_TEL_IDS = env.list('MANAGER_TEL_IDS', subcast=int)
 admins = [ADMIN, ]
 SURVEY_NAMES = env.list('SURVEY_NAMES')
-
+print(SURVEY_NAMES)
 # MySQL settings
 MYSQL_HOST = env.str('MYSQL_HOST')
 MYSQL_DATABASE = env.str('MYSQL_DATABASE')

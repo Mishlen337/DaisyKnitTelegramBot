@@ -69,7 +69,7 @@ class ResponsesSurveyManagersNotifier(AbstractResponsesSurveyObserver):
         workbook  = writer.book
         worksheet = writer.sheets['Sheet1']
         wrap_format = workbook.add_format({'text_wrap': True})
-        writer.save()
+        writer.close()
         ############
         for mtid in self.manager_tel_ids:
             f = InputFile(excel_filename, "results.xlsx")

@@ -61,4 +61,5 @@ class ResponsesSurveyManagersNotifier(AbstractResponsesSurveyObserver):
         excel_filename = f"results_{event_args.user.user_id_tel}.xlsx"
         pd.DataFrame(responses).to_excel(excel_filename)
         for mtid in self.manager_tel_ids:
-            await self.dp.bot.send_document(chat_id=mtid, document=excel_filename, caption=f'Новый заказ/опрос от {event_args.user.username}')
+            with open(excel_filename, 'r') as f:
+                await self.dp.bot.send_document(chat_id=mtid, document=f, caption=f'Новый заказ/опрос от {event_args.user.username}')

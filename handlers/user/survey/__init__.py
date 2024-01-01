@@ -13,6 +13,9 @@ def setup(dp: Dispatcher):
                                 commands='finish', state="survey_state")
 
     dp.register_message_handler(response_message.get_response_error,
+                                commands=['start', 'help'], state="survey_state")
+
+    dp.register_message_handler(response_message.get_response_error,
                                 ResponseTypeValidFilter(False, dp),
                                 state="survey_state")
 

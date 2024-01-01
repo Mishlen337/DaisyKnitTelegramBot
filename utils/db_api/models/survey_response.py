@@ -15,11 +15,12 @@ class SurveyResponse:
         self.id = id
         self.survey: Survey = None
         self.user: User = None
+        self.is_finished = False
 
     async def set_info_db(self):
         """Gets info about question from mysql db."""
 
-        sql = """SELECT s.name, u.user_id_tel FROM daisyKnitSurvey.survey_response sr
+        sql = """SELECT s.name, u.user_id_tel, sr.is_finished FROM daisyKnitSurvey.survey_response sr
         JOIN daisyKnitSurvey.User u ON sr.user_id = u.id
         JOIN daisyKnitSurvey.Survey s ON sr.survey_id = s.id
         WHERE sr.id = %s;"""
@@ -33,6 +34,8 @@ class SurveyResponse:
         user_id_tel = info['user_id_tel']
         self.user = User(user_id_tel)
         await self.user.set_info_db()
+
+        self.is_finished = info['is_finished']
 
     async def get_responses_db(self) -> Dict[str, str]:
         """Gets respones to this survey from mysql db
@@ -61,9 +64,9 @@ class SurveyResponse:
         :return: SurveyResponse instance
         :rtype: SurveyResponse
         """
-        sql = """INSERT daisyKnitSurvey.survey_response (survey_id, user_id)
-        VALUES (%s, %s);"""
-        params = (survey.id, user.id)
+        sql = """INSERT daisyKnitSurvey.survey_response (survey_id, user_id, is_finished)
+        VALUES (%s, %s, %s);"""
+        params = (survey.id, user.id, False)
         await cn._make_request(sql, params)
         sql = """SELECT LAST_INSERT_ID() as id
         FROM daisyKnitSurvey.survey_response;"""
@@ -73,4 +76,10 @@ class SurveyResponse:
         survey_response = SurveyResponse(id)
         survey_response.survey = survey
         survey_response.user = user
+        survey_response.is_finished = False
         return survey_response
+
+    async def finish(self):
+        sql = """UPDATE daisyKnitSurvey.survey_response SET is_finished = %s WHERE id = %s;"""
+        params = (True, self.id)
+        await cn._make_request(sql, params)

@@ -50,10 +50,11 @@ class ResponseMessage:
             await question_response.save()
 
             if (survey[survey_response_id] == []):
-                await response.bot.send_message(user_id_tel, text="Спасибо за опрос:)")
+                await survey_response.finish()
+                await response.bot.send_message(user_id_tel, text="Спасибо:) Чтобы узнать как и где забрать заказ, напишите /help")
                 await state.set_state(state="initial_state")
                 await state.reset_data()
-                await self.responses_survey_manager.notify(survey_response)
+                # await self.responses_survey_manager.notify(survey_response)
             else:
                 sent_message = await send_next_question(response.bot, user.user_id_tel, survey)
                 await state.set_data({"survey": survey, "last_question_message_id": sent_message.message_id})
@@ -72,7 +73,7 @@ async def get_response_error(response: Message,
     :param state: State instance with survey and question data
     :type state: FSMContext
     """
-    await response.bot.send_message(response.from_user.id, "У вас есть активный опрос. Пройдите его. Для того, чтобы его закончить преждевременно, напишите /finish")
+    await response.bot.send_message(response.from_user.id, "У вас есть активный заказ/опрос. Пройдите его. Для того, чтобы его закончить преждевременно, напишите /finish")
 
 
 async def log_response(user_id: str, response: str):
@@ -96,4 +97,4 @@ async def finish(message: Message, state: FSMContext):
     """Handler to finish survey."""
     await state.reset_data()
     await state.set_state("initial_state")
-    await message.bot.send_message(message.from_user.id, text="Преждевременно завершен опрос.")
+    await message.bot.send_message(message.from_user.id, text="Преждевременно завершен заказ/опрос.")

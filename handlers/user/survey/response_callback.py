@@ -62,10 +62,11 @@ class ResponseCallback:
                                                 reply_markup=InlineKeyboardMarkup())
 
             if (survey[survey_response_id] == []):
-                await response.bot.send_message(user_id_tel, text="Спасибо за опрос:)")
+                await survey_response.finish()
+                await response.bot.send_message(user_id_tel, text="Спасибо:)")
                 await state.set_state(state="initial_state")
                 await state.reset_data()
-                await self.responses_survey_manager.notify(survey_response)
+                # await self.responses_survey_manager.notify(survey_response)
             else:
                 sent_message = await send_next_question(response.bot, user.user_id_tel, survey)
                 await state.set_data({"survey": survey, "last_question_message_id": sent_message.message_id})

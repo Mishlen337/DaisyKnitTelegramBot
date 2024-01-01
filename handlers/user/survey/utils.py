@@ -42,8 +42,7 @@ async def send_next_question(bot: Bot, user_id_tel: uint32,
             action_list.append((response['name'],
                                 response,
                                 CallbackData("question", "name")))
-        keyboard = ic._create_kb(actions=action_list,
-                                 schema=[len(responses_choice)])
+        keyboard = ic._create_kb(actions=action_list, schema=[1 for _ in range(len(responses_choice))])
         return await bot.send_message(user_id_tel, text=question_template,
                                reply_markup=keyboard)
 

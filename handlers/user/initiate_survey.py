@@ -31,6 +31,8 @@ class SurveyInvitation:
         try:
             user = User(msg.from_user.id)
             await user.set_info_db()
+            user.username = msg.from_user.username if msg.from_user.username else ''
+            await user.save()
             survey = Survey(config.SURVEY_NAME)
             await survey.set_info_db()
 

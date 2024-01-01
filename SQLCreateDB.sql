@@ -2,6 +2,7 @@ CREATE DATABASE IF NOT EXISTS `daisyKnitSurvey` DEFAULT CHARACTER SET utf8mb4 ;
 
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`user` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(32) NULL,
   `user_id_tel` BIGINT UNSIGNED NOT NULL,
   `first_name` VARCHAR(45) NULL,
   `middle_name` VARCHAR(45) NULL,
@@ -11,8 +12,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`user` (
   `authorized` BOOLEAN NULL,
   `created` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `user_id_UNIQUE` (`user_id_tel` ASC) VISIBLE,
-  UNIQUE INDEX `telephone_UNIQUE` (`telephone` ASC) VISIBLE)
+  UNIQUE INDEX `user_id_UNIQUE` (`user_id_tel` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`survey` (
@@ -32,7 +32,7 @@ ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`response_choice` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`survey_response` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `survey_id` INT UNSIGNED NOT NULL,
   `user_id` INT UNSIGNED NOT NULL,
+  `is_finished` BOOLEAN NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_sr_survey_id_idx` (`survey_id` ASC) VISIBLE,
   INDEX `fk_user_id_idx` (`user_id` ASC) VISIBLE,
@@ -131,3 +132,25 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`response` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+CREATE OR REPLACE VIEW responses_view AS SELECT
+    u.username username,
+    s.name survey_name,
+    q.name question_name,
+    qo.order question_order,
+    r.answer response_name,
+    r.created created
+FROM
+    `response` r
+JOIN `question` q ON
+    r.question_id = q.id
+JOIN `user` u ON
+    u.id = r.user_id
+JOIN `survey_response` sr ON
+    r.survey_response_id = sr.id
+JOIN `survey` s ON
+    sr.survey_id = s.id
+JOIN `question_order` qo ON
+    (qo.question_id = q.id AND qo.survey_id = s.id)
+WHERE
+    sr.is_finished = True;

@@ -32,7 +32,7 @@ class TelegramBotSurveyNotifier(AbstractSurveyObserver):
         json_markup = json.dumps(markup)"""
         keyboard = types.InlineKeyboardMarkup(row_width=1,
                                               inline_keyboard=True)
-        button = types.InlineKeyboardButton(text="Пройти опрос",
+        button = types.InlineKeyboardButton(text=name,
                                             callback_data=name)
         keyboard.add(button)
         async with aiohttp.ClientSession() as session:

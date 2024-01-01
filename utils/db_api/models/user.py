@@ -10,6 +10,7 @@ class User:
     """Class to declare Daisy Knit user."""
     def __init__(self, user_id_tel: uint32):
         self.user_id_tel = user_id_tel
+        self.username = None
         self.id: uint32 = None
         self.first_name: str = None
         self.middle_name: str = None
@@ -35,7 +36,7 @@ class User:
         """Sets info about user from mysql."""
         # TODO fil fields from db
         sql = """
-        SELECT id, first_name, middle_name, last_name, email,
+        SELECT id, username, first_name, middle_name, last_name, email,
         telephone, authorized, created FROM daisyKnitSurvey.user
         WHERE user_id_tel = %s;
         """
@@ -44,6 +45,7 @@ class User:
         if info is None:
             return
         self.id = info['id']
+        self.username = info['username']
         self.first_name = info['first_name']
         self.middle_name = info['middle_name']
         self.last_name = info['last_name']
@@ -76,16 +78,21 @@ class User:
         """Saves user in mysql db."""
         sql = """
         INSERT INTO daisyKnitSurvey.user
-        (user_id_tel, first_name, middle_name, last_name,
+        (user_id_tel, username, first_name, middle_name, last_name,
         email, telephone, authorized, created)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        AS new(u, f, m, l, e, t, a, c)
-        ON DUPLICATE KEY UPDATE first_name = f,
-        middle_name = m, last_name = l,
-        email = e, authorized = a;
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        AS new(u, un, f, m, l, e, t, a, c)
+        ON DUPLICATE KEY UPDATE
+        username = un,
+        first_name = f,
+        middle_name = m,
+        last_name = l,
+        email = e,
+        authorized = a,
+        created = c;
         """
         self.created = datetime.now()
-        params = (self.user_id_tel, self.first_name, self.middle_name,
+        params = (self.user_id_tel, self.username, self.first_name, self.middle_name,
                   self.last_name, self.email, self.telephone,
                   self.authorized, self.created)
         await cn._make_request(sql, params)

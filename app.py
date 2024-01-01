@@ -5,7 +5,7 @@ import aiogram
 import asyncio
 from aiogram import types, Dispatcher, Bot
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
-# from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from fastapi import FastAPI
 
 import handlers, filters
@@ -14,8 +14,8 @@ from loguru import logger
 
 from data import config
 
-storage = RedisStorage2(**config.aiogram_redis)
-# storage = MemoryStorage()
+# storage = RedisStorage2(**config.aiogram_redis)
+storage = MemoryStorage()
 bot = aiogram.Bot(token=config.BOT_TOKEN, parse_mode=aiogram.types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=storage)
 

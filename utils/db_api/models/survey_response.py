@@ -21,8 +21,8 @@ class SurveyResponse:
         """Gets info about question from mysql db."""
 
         sql = """SELECT s.name, u.user_id_tel, sr.is_finished FROM daisyKnitSurvey.survey_response sr
-        JOIN daisyKnitSurvey.User u ON sr.user_id = u.id
-        JOIN daisyKnitSurvey.Survey s ON sr.survey_id = s.id
+        JOIN daisyKnitSurvey.user u ON sr.user_id = u.id
+        JOIN daisyKnitSurvey.survey s ON sr.survey_id = s.id
         WHERE sr.id = %s;"""
         params = (self.id,)
         info = await cn._make_request(sql, params, True)

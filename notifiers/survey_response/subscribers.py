@@ -60,7 +60,17 @@ class ResponsesSurveyManagersNotifier(AbstractResponsesSurveyObserver):
         """
         responses = await event_args.get_responses_db()
         excel_filename = f"results_{event_args.user.user_id_tel}.xlsx"
-        pd.DataFrame(responses).to_excel(excel_filename)
+        # pd.DataFrame(responses).to_excel(excel_filename)
+        ##########
+        writer = pd.ExcelWriter(excel_filename, engine='xlsxwriter')
+        pd.DataFrame(responses).to_excel(writer, sheet_name='Sheet1', index=False)
+
+        #modifyng output by style - wrap
+        workbook  = writer.book
+        worksheet = writer.sheets['Sheet1']
+        wrap_format = workbook.add_format({'text_wrap': True})
+        writer.save()
+        ############
         for mtid in self.manager_tel_ids:
             f = InputFile(excel_filename, "results.xlsx")
-            await self.dp.bot.send_document(chat_id=mtid, document=f, caption=f'Новый заказ/опрос от {event_args.user.username}')
+            await self.dp.bot.send_document(chat_id=mtid, document=f, caption=f'Новый заказ/опрос от @{event_args.user.username}')

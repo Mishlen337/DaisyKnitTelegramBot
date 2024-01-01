@@ -1,8 +1,5 @@
 To start the project:
-1. fill .env file
-2. docker compose up bot --build
-
-Configure https proxy:
+1. Configure https proxy:
 sudo apt update
 sudo apt install nginx
 sudo vim /etc/nginx/sites-enabled/example.com
@@ -12,3 +9,6 @@ sudo ufw enable
 sudo apt install certbot python3-certbot-nginx
 sudo certbot --nginx -d example.com -d www.example.com
 sudo systemctl status certbot.timer
+
+2. fill .env file
+3. docker compose up --build

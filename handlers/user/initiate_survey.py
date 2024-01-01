@@ -45,4 +45,3 @@ class SurveyInvitation:
         except Exception as ex:
             logger.error(ex)
             await msg.answer("Проблемы с базой данных. Попробуйте позже! Поддержка @mishlen25")
-]

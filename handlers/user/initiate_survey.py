@@ -37,7 +37,7 @@ class SurveyInvitation:
             await survey.set_info_db()
 
             if survey.id is None:
-                await msg.answer("Нет активного опроса!")
+                await msg.answer("Нет активного заказа/опроса!")
             else:
                 event_args = SurveyEventArgs(user, survey)
                 await self.survey_manager.notify(event_args)
@@ -45,3 +45,4 @@ class SurveyInvitation:
         except Exception as ex:
             logger.error(ex)
             await msg.answer("Проблемы с базой данных. Попробуйте позже! Поддержка @mishlen25")
+]

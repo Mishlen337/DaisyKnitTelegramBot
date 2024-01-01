@@ -1,6 +1,7 @@
 """Module to declare managers subscribers."""
 from typing import List
 from aiogram.dispatcher.dispatcher import Dispatcher
+from aiogram.types import InputFile
 import pandas as pd
 # pd.set_option('display.max_columns', None)
 
@@ -61,5 +62,5 @@ class ResponsesSurveyManagersNotifier(AbstractResponsesSurveyObserver):
         excel_filename = f"results_{event_args.user.user_id_tel}.xlsx"
         pd.DataFrame(responses).to_excel(excel_filename)
         for mtid in self.manager_tel_ids:
-            with open(excel_filename, 'r') as f:
-                await self.dp.bot.send_document(chat_id=mtid, document=f, caption=f'Новый заказ/опрос от {event_args.user.username}')
+            f = InputFile(excel_filename, "results.xlsx")
+            await self.dp.bot.send_document(chat_id=mtid, document=f, caption=f'Новый заказ/опрос от {event_args.user.username}')

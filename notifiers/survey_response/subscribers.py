@@ -68,7 +68,7 @@ class ResponsesSurveyManagersNotifier(AbstractResponsesSurveyObserver):
         #modifyng output by style - wrap
         workbook  = writer.book
         worksheet = writer.sheets['Sheet1']
-        wrap_format = workbook.add_format({'text_wrap': True})
+        worksheet.autofit()
         writer.close()
         ############
         for mtid in self.manager_tel_ids:

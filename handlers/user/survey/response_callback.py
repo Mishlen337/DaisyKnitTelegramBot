@@ -63,7 +63,7 @@ class ResponseCallback:
 
             if (survey[survey_response_id] == []):
                 await survey_response.finish()
-                await response.bot.send_message(user_id_tel, text="Спасибо:)")
+                await response.bot.send_message(user_id_tel, text="Спасибо:)\nЧтобы узнать как и где забрать заказ, напишите /help\nЧтобы оформить новый заказ, напишите /start")
                 await state.set_state(state="initial_state")
                 await state.reset_data()
                 # await self.responses_survey_manager.notify(survey_response)
@@ -84,7 +84,7 @@ class ResponseCallback:
         :param state: State instance with survey and question data
         :type state: FSMContext
         """
-        await response.answer("У вас есть активный опрос. Пройдите его. Для того, чтобы его закончить преждевременно, напишите /finish", show_alert=True)
+        await response.answer("У вас есть активный заказ/опрос\nПройдите его. Для того, чтобы его закончить преждевременно, напишите /finish", show_alert=True)
 
 
 async def log_response(user_id: str, response: str):

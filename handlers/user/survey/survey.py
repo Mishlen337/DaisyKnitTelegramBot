@@ -29,7 +29,7 @@ async def initiate_survey(call: types.CallbackQuery, state: FSMContext):
         # await call.bot.edit_message_reply_markup(call.from_user.id,
         #                                         call.message.message_id,
         #                                         reply_markup=InlineKeyboardMarkup())
-        await call.bot.send_message(user.user_id_tel, call.data)
+        await call.bot.send_message(user.user_id_tel, "Вы выбрали: " + call.data)
         sent_message = await send_next_question(call.bot, call.from_user.id, survey)
 
         await state.set_data({"survey": survey, "last_question_message_id": sent_message.message_id})

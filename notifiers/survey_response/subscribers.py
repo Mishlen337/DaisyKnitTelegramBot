@@ -73,4 +73,4 @@ class ResponsesSurveyManagersNotifier(AbstractResponsesSurveyObserver):
         ############
         for mtid in self.manager_tel_ids:
             f = InputFile(excel_filename, "results.xlsx")
-            await self.dp.bot.send_document(chat_id=mtid, document=f, caption=f'Новый заказ/опрос от @{event_args.user.username}')
+            await self.dp.bot.send_document(chat_id=mtid, document=f, caption=f'{event_args.survey.name} от @{event_args.user.username}')

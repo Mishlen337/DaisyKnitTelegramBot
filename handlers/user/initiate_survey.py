@@ -33,14 +33,16 @@ class SurveyInvitation:
             await user.set_info_db()
             user.username = msg.from_user.username if msg.from_user.username else ''
             await user.save()
-            survey = Survey(config.SURVEY_NAME)
-            await survey.set_info_db()
-
-            if survey.id is None:
-                await msg.answer("Нет активного заказа/опроса!")
-            else:
-                event_args = SurveyEventArgs(user, survey)
-                await self.survey_manager.notify(event_args)
+            
+            # send surves
+            for survet_name in config.SURVEY_NAMES:
+                survey = Survey(survet_name)
+                await survey.set_info_db()
+                if survey.id is None:
+                    await msg.answer("Нет активного заказа/опроса!")
+                else:
+                    event_args = SurveyEventArgs(user, survey)
+                    await self.survey_manager.notify(event_args)
 
         except Exception as ex:
             logger.error(ex)

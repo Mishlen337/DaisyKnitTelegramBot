@@ -35,14 +35,15 @@ async def bot_start(msg: types.Message, state: FSMContext):
         await user.save()
         await state.set_state("initial_state")
 
-        # send survey
-        survey = Survey(config.SURVEY_NAME)
-        await survey.set_info_db()
-        if survey.id is None:
-            await msg.answer("Нет активного заказа/опроса!")
-        else:
-            event_args = SurveyEventArgs(user, survey)
-            await survey_invitation.survey_manager.notify(event_args)
+        # send surves
+        for survet_name in config.SURVEY_NAMES:
+            survey = Survey(survet_name)
+            await survey.set_info_db()
+            if survey.id is None:
+                await msg.answer("Нет активного заказа/опроса!")
+            else:
+                event_args = SurveyEventArgs(user, survey)
+                await survey_invitation.survey_manager.notify(event_args)
 
     except Exception as ex:
         logger.error(ex)

@@ -15,7 +15,7 @@ WEBHOOK_BOT_URL = f'{BASE_URL}{WEBHOOK_BOT_PATH}'
 ADMIN = env.int('ADMIN')
 MANAGER_TEL_IDS = env.list('MANAGER_TEL_IDS', subcast=int)
 admins = [ADMIN, ]
-SURVEY_NAME = env.str('SURVEY_NAME')
+SURVEY_NAMES = env.list('SURVEY_NAMES')
 
 # MySQL settings
 MYSQL_HOST = env.str('MYSQL_HOST')

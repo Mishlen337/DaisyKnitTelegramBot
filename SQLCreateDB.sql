@@ -134,11 +134,12 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`response` (
 ENGINE = InnoDB;
 
 CREATE OR REPLACE VIEW responses_view AS SELECT
+    sr.id survey_response_id,
+    u.user_id_tel,
     u.username username,
     s.name survey_name,
     q.name question_name,
-    qo.order question_order,
-    r.answer response_name,
+    r.answer answer,
     r.created created
 FROM
     `response` r

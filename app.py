@@ -2,13 +2,22 @@
 import uvicorn
 
 import aiogram
-import asyncio
+import pandas as pd
+from fastapi import FastAPI
+from fastapi import Request
+
 from aiogram import types, Dispatcher, Bot
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from fastapi import FastAPI
+from aiogram.types import InputFile
 
 import handlers, filters
+from utils.db_api.models.user import User
+from utils.db_api.models.survey import Survey
+from utils.db_api.models.survey_response import SurveyResponse
+from notifiers.survey.subscribers import TelegramBotSurveyNotifier
+from notifiers.survey.event_args import SurveyEventArgs
+
 
 from loguru import logger
 
@@ -45,6 +54,48 @@ async def bot_webhook(update: dict):
     #     logger.error(e)
 
 
+@app.post(config.NOTIFICATION_SURVEY_PATH)
+async def bot_notification_survey(request: Request):
+    try:
+        user_survey_response_dict = {}
+        text = await request.body()
+        survey_response_ids = list(set([int(val) for val in text]))
+    except Exception as ex:
+        logger.error(ex)
+        return 400, "Incorrect request body"
+
+    users = []
+    for survey_response_id in survey_response_ids:
+        survey_response = SurveyResponse(survey_response_id)
+        await survey_response.set_info_db()
+        
+        user = survey_response.user
+        if user not in users:
+            users.append(user)
+            dp.bot.send_message(user.user_id_tel, "Ваши ближашие заказы: ")
+
+        responses = await survey_response.get_responses_db()
+        excel_filename = f"results_{user.user_id_tel}.xlsx"
+        ##########
+        writer = pd.ExcelWriter(excel_filename, engine='xlsxwriter')
+        pd.DataFrame(responses).to_excel(writer, sheet_name='Sheet1', index=False)
+
+        worksheet = writer.sheets['Sheet1']
+        worksheet.autofit()
+        writer.close()
+        ############
+        f = InputFile(excel_filename, "results.xlsx")
+        await dp.bot.send_document(chat_id=user.user_id_tel, document=f, caption=survey_response.survey.name)
+
+    for user in users:
+        notification_survey = Survey(config.NOTIFICATION_SURVEY_NAME)
+        await notification_survey.set_info_db()
+        if notification_survey.id is None:
+            return 400, "No such notification survey"
+
+        event_args = SurveyEventArgs(user, notification_survey)
+        TelegramBotSurveyNotifier().update(event_args)
+
 @app.on_event("shutdown")
 async def on_shutdown():
     """Closes all connections."""
@@ -55,3 +106,32 @@ async def on_shutdown():
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=7777)
+"""
+11	547184043
+11	547184043
+11	547184043
+14	547184043
+14	547184043
+14	547184043
+21	547184043
+21	547184043
+21	547184043
+29	5883538412
+29	5883538412
+29	5883538412
+30	547184043
+30	547184043
+30	547184043
+31	547184043
+31	547184043
+31	547184043
+32	6261063458
+32	6261063458
+32	6261063458
+36	789902929
+36	789902929
+36	789902929
+37	547184043
+37	547184043
+37	547184043
+"""

@@ -23,8 +23,8 @@ from loguru import logger
 
 from data import config
 
-# storage = RedisStorage2(**config.aiogram_redis)
-storage = MemoryStorage()
+storage = RedisStorage2(**config.aiogram_redis)
+# storage = MemoryStorage()
 bot = aiogram.Bot(token=config.BOT_TOKEN, parse_mode=aiogram.types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=storage)
 
@@ -57,9 +57,8 @@ async def bot_webhook(update: dict):
 @app.post(config.NOTIFICATION_SURVEY_PATH)
 async def bot_notification_survey(request: Request):
     try:
-        user_survey_response_dict = {}
         text = await request.body()
-        survey_response_ids = list(set([int(val) for val in text]))
+        survey_response_ids = list(set([int(val) for val in text.split('\n')]))
     except Exception as ex:
         logger.error(ex)
         return 400, "Incorrect request body"
@@ -86,13 +85,13 @@ async def bot_notification_survey(request: Request):
         ############
         f = InputFile(excel_filename, "results.xlsx")
         await dp.bot.send_document(chat_id=user.user_id_tel, document=f, caption=survey_response.survey.name)
+    
+    notification_survey = Survey(config.NOTIFICATION_SURVEY_NAME)
+    await notification_survey.set_info_db()
+    if notification_survey.id is None:
+        return 400, "No such notification survey"
 
     for user in users:
-        notification_survey = Survey(config.NOTIFICATION_SURVEY_NAME)
-        await notification_survey.set_info_db()
-        if notification_survey.id is None:
-            return 400, "No such notification survey"
-
         event_args = SurveyEventArgs(user, notification_survey)
         TelegramBotSurveyNotifier().update(event_args)
 
@@ -106,32 +105,3 @@ async def on_shutdown():
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=7777)
-"""
-11	547184043
-11	547184043
-11	547184043
-14	547184043
-14	547184043
-14	547184043
-21	547184043
-21	547184043
-21	547184043
-29	5883538412
-29	5883538412
-29	5883538412
-30	547184043
-30	547184043
-30	547184043
-31	547184043
-31	547184043
-31	547184043
-32	6261063458
-32	6261063458
-32	6261063458
-36	789902929
-36	789902929
-36	789902929
-37	547184043
-37	547184043
-37	547184043
-"""

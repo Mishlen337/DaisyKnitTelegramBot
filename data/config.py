@@ -11,7 +11,7 @@ BOT_TOKEN = env.str("BOT_TOKEN")  # Забираем значение типа s
 BASE_URL = env.str('BASE_URL')  # Webhook domain
 WEBHOOK_BOT_PATH = f'/bot/webhook/'
 WEBHOOK_BOT_URL = f'{BASE_URL}{WEBHOOK_BOT_PATH}'
-NOTIFICATION_SURVEY_PATH = f'/notification_survey'
+NOTIFICATION_SURVEY_PATH = f'/bot/notification_survey'
 
 ADMIN = env.int('ADMIN')
 MANAGER_TEL_IDS = env.list('MANAGER_TEL_IDS', subcast=int)

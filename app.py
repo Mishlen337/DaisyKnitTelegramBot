@@ -75,7 +75,7 @@ async def bot_notification_survey(request: Request):
         user = survey_response.user
         if user not in users:
             users.append(user)
-            dp.bot.send_message(user.user_id_tel, "Ваши ближашие заказы: ")
+            await dp.bot.send_message(user.user_id_tel, "Ваши ближашие заказы: ")
 
         responses = await survey_response.get_responses_db()
         excel_filename = f"results_{user.user_id_tel}.xlsx"

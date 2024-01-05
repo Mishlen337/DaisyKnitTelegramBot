@@ -64,7 +64,7 @@ async def bot_notification_survey(request: Request):
         logger.error(ex)
         return 400, "Incorrect request body"
 
-    users = []
+    user_id_tel_list = []
     for survey_response_id in survey_response_ids:
         survey_response = SurveyResponse(survey_response_id)
         await survey_response.set_info_db()
@@ -72,13 +72,13 @@ async def bot_notification_survey(request: Request):
             logger.info("No such servey response")
             continue
 
-        user = survey_response.user
-        if user not in users:
-            users.append(user)
-            await dp.bot.send_message(user.user_id_tel, "Ваши ближашие заказы: ")
+        user_id_tel = survey_response.user.user_id_tel
+        if user_id_tel not in user_id_tel_list:
+            user_id_tel_list.append(user_id_tel)
+            await dp.bot.send_message(user_id_tel, "Ваши ближашие заказы: ")
 
         responses = await survey_response.get_responses_db()
-        excel_filename = f"results_{user.user_id_tel}.xlsx"
+        excel_filename = f"results_{user_id_tel}.xlsx"
         ##########
         writer = pd.ExcelWriter(excel_filename, engine='xlsxwriter')
         pd.DataFrame(responses).to_excel(writer, sheet_name='Sheet1', index=False)
@@ -88,14 +88,16 @@ async def bot_notification_survey(request: Request):
         writer.close()
         ############
         f = InputFile(excel_filename, "results.xlsx")
-        await dp.bot.send_document(chat_id=user.user_id_tel, document=f, caption=survey_response.survey.name)
+        await dp.bot.send_document(chat_id=user_id_tel, document=f, caption=survey_response.survey.name)
     
     notification_survey = Survey(config.NOTIFICATION_SURVEY_NAME)
     await notification_survey.set_info_db()
     if notification_survey.id is None:
         return 400, "No such notification survey"
 
-    for user in users:
+    for user_id_tel in user_id_tel_list:
+        user = User(user_id_tel)
+        await user.set_info_db()
         event_args = SurveyEventArgs(user, notification_survey)
         await TelegramBotSurveyNotifier().update(event_args)
     return 200, "ok"

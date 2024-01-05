@@ -57,7 +57,7 @@ async def bot_webhook(update: dict):
 @app.post(config.NOTIFICATION_SURVEY_PATH)
 async def bot_notification_survey(request: Request):
     try:
-        text = str(await request.body())
+        text = await request.body()
         print(text)
         survey_response_ids = list(set([int(val) for val in text.split('\n')]))
     except Exception as ex:

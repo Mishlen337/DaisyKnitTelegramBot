@@ -58,7 +58,6 @@ async def bot_webhook(update: dict):
 async def bot_notification_survey(request: Request):
     try:
         text = (await request.body()).decode("utf-8")
-        print(text)
         survey_response_ids = list(set([int(val) for val in text.split('\n')]))
     except Exception as ex:
         logger.error(ex)

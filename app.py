@@ -97,7 +97,8 @@ async def bot_notification_survey(request: Request):
 
     for user in users:
         event_args = SurveyEventArgs(user, notification_survey)
-        TelegramBotSurveyNotifier().update(event_args)
+        await TelegramBotSurveyNotifier().update(event_args)
+    return 200, "ok"
 
 @app.on_event("shutdown")
 async def on_shutdown():

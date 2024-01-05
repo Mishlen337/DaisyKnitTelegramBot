@@ -51,7 +51,7 @@ class ResponseMessage:
 
             if (survey[survey_response_id] == []):
                 await survey_response.finish()
-                await response.bot.send_message(user_id_tel, text=f"Заказ/опрос № {survey_response_id}\nУзнать как и где забрать заказ, напишите /help\nОформить новый заказ, напишите /start")
+                await response.bot.send_message(user_id_tel, text=f"Спасибо за ваш заказ/опрос!\nУзнать как и где забрать заказ, напишите /help\nОформить новый заказ, напишите /start")
                 await state.set_state(state="initial_state")
                 await state.reset_data()
                 await self.responses_survey_manager.notify(survey_response)

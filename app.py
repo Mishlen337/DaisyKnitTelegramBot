@@ -57,7 +57,8 @@ async def bot_webhook(update: dict):
 @app.post(config.NOTIFICATION_SURVEY_PATH)
 async def bot_notification_survey(request: Request):
     try:
-        text = await request.body()
+        text = str(await request.body())
+        print(text)
         survey_response_ids = list(set([int(val) for val in text.split('\n')]))
     except Exception as ex:
         logger.error(ex)
@@ -67,7 +68,10 @@ async def bot_notification_survey(request: Request):
     for survey_response_id in survey_response_ids:
         survey_response = SurveyResponse(survey_response_id)
         await survey_response.set_info_db()
-        
+        if not survey_response.user:
+            logger.info("No such servey response")
+            continue
+
         user = survey_response.user
         if user not in users:
             users.append(user)

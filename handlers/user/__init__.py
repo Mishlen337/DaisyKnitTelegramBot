@@ -17,9 +17,6 @@ def setup(dp: Dispatcher):
     dp.register_message_handler(initiate_survey.SurveyInvitation().survey_invitation,
                                 commands="start", state="initial_state")
 
-    dp.register_message_handler(help.bot_message,
-                                state="initial_state")
-
     dp.register_message_handler(help.bot_help, commands="help",
                                 state="initial_state")
 
@@ -30,3 +27,5 @@ def setup(dp: Dispatcher):
     # dp.register_message_handler(get_contact.get_contact_error,
     #                             state="telephone_state")
     dp.register_message_handler(start.bot_start, commands='start', state="*")
+
+    dp.register_message_handler(help.bot_message, state="initial_state")

@@ -17,7 +17,7 @@ def setup(dp: Dispatcher):
     dp.register_message_handler(initiate_survey.SurveyInvitation().survey_invitation,
                                 commands="start", state="initial_state")
 
-    dp.register_message_handler(help.bot_help,
+    dp.register_message_handler(help.bot_message,
                                 state="initial_state")
 
     dp.register_message_handler(help.bot_help, commands="help",

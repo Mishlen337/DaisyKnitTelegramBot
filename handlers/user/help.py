@@ -27,3 +27,7 @@ Ps.👛Возьмите, по-возможности, пожалуйста, ме
 @rate_limit(5, 'help')
 async def bot_help(msg: types.Message, state: FSMContext):
     await msg.answer(help_message)
+
+async def bot_message(msg: types.Message, state: FSMContext):
+    message = "Для оформления заказа введите команду /start"
+    await msg.answer(message)

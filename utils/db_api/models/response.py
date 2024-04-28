@@ -32,6 +32,14 @@ class Response:
             return
         self.answer = info['answer']
 
+    async def is_unique(self):
+        sql = """SELECT answer FROM daisyKnitSurvey.response
+        WHERE question_id = %s
+        AND answer = %s;"""
+        params = (self.question.id, self.answer)
+        res = await cn._make_request(sql, params, True)
+        return res is None
+
     async def save(self):
         """Saves response in mysql db."""
         sql = """INSERT daisyKnitSurvey.response

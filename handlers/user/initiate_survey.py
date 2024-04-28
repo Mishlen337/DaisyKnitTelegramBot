@@ -39,7 +39,7 @@ class SurveyInvitation:
                 survey = Survey(survet_name)
                 await survey.set_info_db()
                 if survey.id is None:
-                    await msg.answer("Нет активного заказа/опроса!")
+                    await msg.answer("Нет ни одной активной формы для записи!")
                 else:
                     event_args = SurveyEventArgs(user, survey)
                     await self.survey_manager.notify(event_args)

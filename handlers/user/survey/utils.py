@@ -1,5 +1,6 @@
 """Module to send question in Telegram Bot."""
 
+import datetime
 from typing import Dict, List
 from numpy import uint32
 from aiogram.bot import Bot
@@ -7,6 +8,37 @@ from utils.db_api.models.question import Question
 from utils.db_api.models.survey_response import SurveyResponse
 from keyboards.inline.consts import InlineConstructor as ic
 from aiogram.utils.callback_data import CallbackData
+
+
+def get_date_by_weekday(weekday_name):
+    # Словарь для преобразования названия дня недели в номер
+    weekdays = {
+        'пн': 0,
+        'вт': 1,
+        'ср': 2,
+        'чт': 3,
+        'пт': 4,
+        'сб': 5,
+        'вс': 6
+    }
+    if weekday_name.lower() not in weekdays:
+        return None
+
+    # Получение текущей даты
+    current_date = datetime.date.today()
+    # Получение номера текущего дня недели
+    current_weekday = current_date.weekday()
+    # Получение номера нужного дня недели
+    target_weekday = weekdays[weekday_name.lower()]
+
+    # Расчет разницы между текущим днем и нужным днем недели
+    days_ahead = target_weekday - current_weekday
+    if days_ahead < 0:  # Если нужный день уже прошел
+        days_ahead += 7
+
+    # Расчет и вывод даты следующего нужного дня недели
+    target_date = current_date + datetime.timedelta(days=days_ahead)
+    return target_date
 
 
 async def send_next_question(bot: Bot, user_id_tel: uint32,
@@ -45,6 +77,29 @@ async def send_next_question(bot: Bot, user_id_tel: uint32,
         keyboard = ic._create_kb(actions=action_list, schema=[1 for _ in range(len(responses_choice))])
         return await bot.send_message(user_id_tel, text=question_template,
                                reply_markup=keyboard)
+
+    if question.type == "schedule":
+        responses_choice = await question.get_response_choices()
+        responses = await question.get_responses()
+        responses_set = set([res['answer'] for res in responses])
+        print(responses_set)
+        print(responses_choice)
+
+        action_list = []
+        for response in responses_choice:
+            weekday, time = response["name"].split()
+            date = get_date_by_weekday(weekday)
+            action = date.strftime('%d.%m') + ' ' + time
+            if action not in responses_set:
+                action_list.append((action,
+                                    {'name': action},
+                                    CallbackData("question", "name")))
+        if action_list:
+            keyboard = ic._create_kb(actions=action_list, schema=[1 for _ in range(len(action_list))])
+            return await bot.send_message(user_id_tel, text=question_template,
+                                reply_markup=keyboard)
+        else:
+            return await bot.send_message(user_id_tel, text="Cвободных дат нет!\nНапишите /finish, чтобы преждевременно завершить запись!")
 
     if question.type == "message":
         return await bot.send_message(user_id_tel, text=question_template)

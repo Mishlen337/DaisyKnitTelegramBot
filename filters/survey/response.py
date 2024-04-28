@@ -18,7 +18,9 @@ class ResponseTypeValidFilter(BoundFilter):
     def __init__(self, response_is_valid, dp: Dispatcher):
         self.dp = dp
         self.response_is_valid = response_is_valid
-        self.question_types = {"callback": CallbackQuery, "quiz": PollAnswer,
+        self.question_types = {"callback": CallbackQuery,
+                               "schedule": CallbackQuery,
+                               "quiz": PollAnswer,
                                "message": Message}
 
     async def check(self, response: Union[CallbackQuery, PollAnswer, Message]):
@@ -56,7 +58,6 @@ class ResponseCallbackValidFilter(BoundFilter):
     def __init__(self, response_is_valid, dp: Dispatcher):
         self.dp = dp
         self.response_is_valid = response_is_valid
-        self.question_types = {"callback": CallbackQuery}
 
     async def check(self, response: CallbackQuery):
         """Checks whether response is valid or not.

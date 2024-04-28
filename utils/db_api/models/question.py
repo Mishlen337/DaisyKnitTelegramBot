@@ -41,6 +41,20 @@ class Question:
         assert not (info is None), "Responses choices of questions is empty"
         return info
 
+    async def get_responses(self) -> List[Dict[str, str]]:
+        """Gets responses to the question from mysql db
+
+        :return: List of responses choices
+        :rtype: List[str]
+        """
+        sql = """SELECT r.answer FROM daisyKnitSurvey.response r
+        WHERE r.question_id = %s;"""
+        params = (self.id,)
+        info = await cn._make_request(sql, params, True, True)
+        info = [] if info is None else info
+        return info
+
+
     async def save(self):
         """Saves question info in mysql db."""
         # TODO save question info

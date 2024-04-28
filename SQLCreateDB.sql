@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`user` (
   `middle_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
   `email` VARCHAR(45) NULL,
-  `telephone` VARCHAR(16) NOT NULL,
+  `telephone` VARCHAR(16) NULL,
   `authorized` BOOLEAN NULL,
   `created` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
@@ -25,7 +25,7 @@ ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `daisyKnitSurvey`.`question_type` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` ENUM('callback', 'quiz', 'message') NOT NULL,
+  `name` ENUM('callback', 'quiz', 'message', 'schedule') NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
 ENGINE = InnoDB;

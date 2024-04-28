@@ -51,7 +51,7 @@ class ResponseMessage:
 
             if (survey[survey_response_id] == []):
                 await survey_response.finish()
-                await response.bot.send_message(user_id_tel, text=f"Спасибо за ваш заказ/опрос!\nУзнать как и где забрать заказ, напишите /help\nОформить новый заказ, напишите /start")
+                await response.bot.send_message(user_id_tel, text=f"Спасибо за вашу запись!\nУзнать, где проходит осмотр, напишите /help\nОформить новую запись, напишите /start")
                 await state.set_state(state="initial_state")
                 await state.reset_data()
                 await self.responses_survey_manager.notify(survey_response)
@@ -73,7 +73,7 @@ async def get_response_error(response: Message,
     :param state: State instance with survey and question data
     :type state: FSMContext
     """
-    await response.bot.send_message(response.from_user.id, "У вас есть активный заказ/опрос\nПройдите его. Для того, чтобы его закончить преждевременно, напишите /finish")
+    await response.bot.send_message(response.from_user.id, "У вас есть активная форма записи\nПройдите ее. Для того, чтобы ее закончить преждевременно, напишите /finish")
 
 
 async def log_response(user_id: str, response: str):
@@ -97,4 +97,4 @@ async def finish(message: Message, state: FSMContext):
     """Handler to finish survey."""
     await state.reset_data()
     await state.set_state("initial_state")
-    await message.bot.send_message(message.from_user.id, text="Преждевременно завершен заказ/опрос.")
+    await message.bot.send_message(message.from_user.id, text="Форма записи преждевременно завершена.")

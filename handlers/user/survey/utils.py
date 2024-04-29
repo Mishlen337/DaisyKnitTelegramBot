@@ -96,8 +96,8 @@ async def send_next_question(bot: Bot, user_id_tel: uint32,
         if action_list:
             action_list.sort(key=lambda x: datetime.datetime.strptime(x[0], "%d.%m %H.%M"))
             schema = [2 for _ in range(len(action_list) // 2)]
-            if action_list % 2 != 0:
-                schema.append(action_list % 2)
+            if len(action_list) % 2 != 0:
+                schema.append(len(action_list) % 2)
 
             keyboard = ic._create_kb(actions=action_list, schema=schema)
             return await bot.send_message(user_id_tel, text=question_template + '                             ',

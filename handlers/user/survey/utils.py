@@ -8,6 +8,7 @@ from utils.db_api.models.question import Question
 from utils.db_api.models.survey_response import SurveyResponse
 from keyboards.inline.consts import InlineConstructor as ic
 from aiogram.utils.callback_data import CallbackData
+from itertools import groupby
 
 
 def get_date_by_weekday(weekday_name):
@@ -82,8 +83,6 @@ async def send_next_question(bot: Bot, user_id_tel: uint32,
         responses_choice = await question.get_response_choices()
         responses = await question.get_responses()
         responses_set = set([res['answer'] for res in responses])
-        print(responses_set)
-        print(responses_choice)
 
         action_list = []
         for response in responses_choice:
@@ -95,7 +94,12 @@ async def send_next_question(bot: Bot, user_id_tel: uint32,
                                     {'name': action},
                                     CallbackData("question", "name")))
         if action_list:
-            keyboard = ic._create_kb(actions=action_list, schema=[1 for _ in range(len(action_list))])
+            action_list.sort(key=lambda x: x[0])
+            schema = []
+            for letter, group in groupby(action_list, key=lambda x: x[0]):
+                schema.append(len(list(group)))
+
+            keyboard = ic._create_kb(actions=action_list, schema=schema)
             return await bot.send_message(user_id_tel, text=question_template,
                                 reply_markup=keyboard)
         else:

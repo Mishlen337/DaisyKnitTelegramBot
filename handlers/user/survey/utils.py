@@ -94,10 +94,10 @@ async def send_next_question(bot: Bot, user_id_tel: uint32,
                                     {'name': action},
                                     CallbackData("question", "name")))
         if action_list:
-            action_list.sort(key=lambda x: x[0])
-            schema = []
-            for letter, group in groupby(action_list, key=lambda x: x[0].split()[0]):
-                schema.append(len(list(group)))
+            action_list.sort(key=lambda x: datetime.datetime.strptime(x[0], "%d.%m %H.%M"))
+            schema = [2 for _ in range(len(action_list) // 2)]
+            if action_list % 2 != 0:
+                schema.append(action_list % 2)
 
             keyboard = ic._create_kb(actions=action_list, schema=schema)
             return await bot.send_message(user_id_tel, text=question_template + '                             ',

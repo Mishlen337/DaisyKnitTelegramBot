@@ -48,7 +48,9 @@ class Question:
         :rtype: List[str]
         """
         sql = """SELECT r.answer FROM daisyKnitSurvey.response r
-        WHERE r.question_id = %s;"""
+        JOIN daisyKnitSurvey.survey_response sr ON r.survey_response_id = sr.id
+        WHERE r.question_id = %s
+        AND sr.is_finished = True"""
         params = (self.id,)
         info = await cn._make_request(sql, params, True, True)
         info = [] if info is None else info

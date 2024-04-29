@@ -33,9 +33,11 @@ class Response:
         self.answer = info['answer']
 
     async def is_unique(self):
-        sql = """SELECT answer FROM daisyKnitSurvey.response
-        WHERE question_id = %s
-        AND answer = %s;"""
+        sql = """SELECT r.answer FROM daisyKnitSurvey.response r
+        JOIN daisyKnitSurvey.survey_response sr ON r.survey_response_id = sr.id
+        WHERE r.question_id = %s
+        AND sr.is_finished = True;
+        AND r.answer = %s;"""
         params = (self.question.id, self.answer)
         res = await cn._make_request(sql, params, True)
         return res is None

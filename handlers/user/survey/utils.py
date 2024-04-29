@@ -100,7 +100,7 @@ async def send_next_question(bot: Bot, user_id_tel: uint32,
                 schema.append(len(list(group)))
 
             keyboard = ic._create_kb(actions=action_list, schema=schema)
-            return await bot.send_message(user_id_tel, text=question_template,
+            return await bot.send_message(user_id_tel, text=question_template + '                             ',
                                 reply_markup=keyboard)
         else:
             return await bot.send_message(user_id_tel, text="Cвободных дат нет!\nНапишите /finish, чтобы преждевременно завершить запись!")

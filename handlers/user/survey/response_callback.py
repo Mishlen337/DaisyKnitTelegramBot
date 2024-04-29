@@ -67,7 +67,7 @@ class ResponseCallback:
 
             if (survey[survey_response_id] == []):
                 await survey_response.finish()
-                await response.bot.send_message(user_id_tel, text=f"Спасибо за вашу запись!\nУзнать, где проходит осмотр, напишите /help\nОформить новую запись, напишите /start")
+                await response.bot.send_message(user_id_tel, text=f"Спасибо за вашу запись! Запись № {survey_response.id}\nУзнать, где проходит осмотр, напишите /help\nОформить новую запись, напишите /start")
                 await state.set_state(state="initial_state")
                 await state.reset_data()
                 await self.responses_survey_manager.notify(survey_response)

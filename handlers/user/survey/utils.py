@@ -96,7 +96,7 @@ async def send_next_question(bot: Bot, user_id_tel: uint32,
         if action_list:
             action_list.sort(key=lambda x: x[0])
             schema = []
-            for letter, group in groupby(action_list, key=lambda x: x[0]):
+            for letter, group in groupby(action_list, key=lambda x: x[0].split()[0]):
                 schema.append(len(list(group)))
 
             keyboard = ic._create_kb(actions=action_list, schema=schema)

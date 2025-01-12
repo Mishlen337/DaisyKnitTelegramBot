@@ -38,7 +38,7 @@ async def on_startup():
     handlers.setup(dp)
 
 
-@app.post(config.WEBHOOK_BOT_PATH)
+@app.post("/bot")
 async def bot_webhook(update: dict):
     """Process update from tg
 
@@ -54,7 +54,7 @@ async def bot_webhook(update: dict):
     #     logger.error(e)
 
 
-@app.post(config.NOTIFICATION_SURVEY_PATH)
+@app.post("/notification")
 async def bot_notification_survey(request: Request):
     try:
         text = (await request.body()).decode("utf-8")
